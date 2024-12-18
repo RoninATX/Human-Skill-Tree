@@ -1,0 +1,234 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "id": "Basic Skills",
+        "label": "Basic Skills",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Communication",
+        "label": "Communication",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Problem Solving",
+        "label": "Problem Solving",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Public Speaking",
+        "label": "Public Speaking",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Active Listening",
+        "label": "Active Listening",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Critical Thinking",
+        "label": "Critical Thinking",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Creativity",
+        "label": "Creativity",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Strategic Planning",
+        "label": "Strategic Planning",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Innovation",
+        "label": "Innovation",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Empathy",
+        "label": "Empathy",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Conflict Resolution",
+        "label": "Conflict Resolution",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Leadership",
+        "label": "Leadership",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "id": "Mentoring",
+        "label": "Mentoring",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": {
+          "min": 1,
+          "max": "∞",
+          "current": 0
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "data": {
+        "source": "Basic Skills",
+        "target": "Communication"
+      }
+    },
+    {
+      "data": {
+        "source": "Basic Skills",
+        "target": "Problem Solving"
+      }
+    },
+    {
+      "data": {
+        "source": "Communication",
+        "target": "Public Speaking"
+      }
+    },
+    {
+      "data": {
+        "source": "Communication",
+        "target": "Active Listening"
+      }
+    },
+    {
+      "data": {
+        "source": "Problem Solving",
+        "target": "Critical Thinking"
+      }
+    },
+    {
+      "data": {
+        "source": "Problem Solving",
+        "target": "Creativity"
+      }
+    },
+    {
+      "data": {
+        "source": "Active Listening",
+        "target": "Empathy"
+      }
+    },
+    {
+      "data": {
+        "source": "Critical Thinking",
+        "target": "Strategic Planning"
+      }
+    },
+    {
+      "data": {
+        "source": "Creativity",
+        "target": "Innovation"
+      }
+    },
+    {
+      "data": {
+        "source": "Strategic Planning",
+        "target": "Leadership"
+      }
+    },
+    {
+      "data": {
+        "source": "Empathy",
+        "target": "Conflict Resolution"
+      }
+    },
+    {
+      "data": {
+        "source": "Leadership",
+        "target": "Mentoring"
+      }
+    }
+  ]
+}

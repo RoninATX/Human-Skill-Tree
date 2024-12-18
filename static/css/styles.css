@@ -1,0 +1,157 @@
+:root {
+    --bg-color: #fafafa;
+    --text-color: #333;
+    --sidebar-bg: #f8f9fa;
+    --header-bg: #f1f1f1;
+    --border-color: #ddd;
+    --button-bg: white;
+    --button-hover: #f1f1f1;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --sidebar-bg: #2d2d2d;
+    --header-bg: #252525;
+    --border-color: #404040;
+    --button-bg: #333333;
+    --button-hover: #404040;
+}
+
+#cy {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    background: transparent;
+}
+
+#cy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--bg-color);
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Sidebar */
+#sidebar {
+    min-width: 250px;
+    width: 250px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    color: var(--text-color);
+    transition: all 0.3s;
+    border-right: 1px solid var(--border-color);
+}
+
+#sidebar.collapsed {
+    margin-left: -250px;
+    min-width: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+/* Main Content */
+#content {
+    position: relative;
+    flex-grow: 1;
+    background-image: url('../images/skilltree_default.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: repeat;
+    background-color: var(--bg-color);
+}
+
+#content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--bg-color);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Toggle Button */
+#sidebarCollapse {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    border: none;
+    background: var(--button-bg);
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#sidebarCollapse:hover {
+    background: var(--button-hover);
+}
+
+/* Add new floating icons styles */
+.floating-icons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+    background: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+/* Ensure cytoscape container is above the overlay */
+#cy {
+    position: relative;
+    z-index: 1;
+}
