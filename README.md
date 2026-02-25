@@ -1,59 +1,48 @@
-# Skill Tree Visualization
+# Human Skill Tree
 
-A web-based skill tree visualization tool that displays hierarchical skill relationships in an interactive graph format.
+A personal skill tree visualization — static HTML/JS, no backend required.
 
-## Features
+## Quick Start
 
-### Core Visualization
-- Interactive skill tree using Cytoscape.js
-- Hierarchical layout with clear parent-child relationships
-- Right-angled edges with dot endpoints
-- Smooth animations and transitions
+Serve the files with any static server:
 
-### Node Display
-- Square nodes with custom background images
-- Centered skill names with proficiency ranges
-- Semi-transparent text background for readability
-- Default skill icon fallback system
+```bash
+python -m http.server
+# or: npx serve
+```
 
-### Navigation & Interface
-- Collapsible sidebar for future navigation/details
-- Fixed position floating controls
-- Dark/Light theme toggle
-- Profile button placeholder
-- Responsive layout that maintains visibility
+Then open `http://localhost:8000`.
 
-### Interaction
-- Node selection with visual feedback
-  - Size increase on selection
-  - Glowing border effect
-  - Smooth transitions
-- Pan and zoom capabilities
-- Single node selection mode
+## Structure
 
-### Skill Data Structure
+```
+index.html              # Main page
+static/
+  css/styles.css        # Theme + layout
+  js/visualization.js   # Cytoscape graph logic
+  data/graph_data.json  # Skill data (source of truth)
+  images/               # Node icons
+```
 
-## Setup
-1. Ensure all files are in their correct locations
-2. Run a local web server:
-   ```bash
-   python -m http.server
-   ```
-3. Access the visualization at `http://localhost:8000`
+## Customizing Skills
 
-## Development
-- VS Code launch configuration included for Python HTTP server
-- Dark/Light theme support using CSS variables
-- Modular design for easy feature additions
+Edit `static/data/graph_data.json`. Each node needs:
 
-## Future Enhancements
-- Skill details panel in sidebar
-- Progress tracking system
-- User profiles and progress persistence
-- Custom skill tree creation tools
-- Additional interactive features
+```json
+{
+  "data": {
+    "id": "unique-id",
+    "label": "Skill Name",
+    "proficiency": { "min": 0, "max": 10 },
+    "image": "static/images/icon.svg"
+  }
+}
+```
 
-## Dependencies
+Edges link skills: `{ "data": { "source": "parent-id", "target": "child-id" } }`
+
+## Dependencies (loaded via CDN)
+
 - Cytoscape.js
-- Dagre layout extension
-- Font Awesome icons
+- Dagre layout
+- Font Awesome
