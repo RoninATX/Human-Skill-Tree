@@ -2,233 +2,715 @@
   "nodes": [
     {
       "data": {
-        "id": "Basic Skills",
-        "label": "Basic Skills",
+        "id": "physical",
+        "label": "Physical",
+        "type": "domain",
+        "description": "Athletics, martial arts, fitness, dance, body mastery",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#C0392B"
       }
     },
     {
       "data": {
-        "id": "Communication",
-        "label": "Communication",
+        "id": "cognitive",
+        "label": "Cognitive",
+        "type": "domain",
+        "description": "Reasoning, analysis, psychology, research, strategy",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#2980B9"
       }
     },
     {
       "data": {
-        "id": "Problem Solving",
-        "label": "Problem Solving",
+        "id": "creative",
+        "label": "Creative",
+        "type": "domain",
+        "description": "Visual arts, music, writing, design, performance",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#8E44AD"
       }
     },
     {
       "data": {
-        "id": "Public Speaking",
-        "label": "Public Speaking",
+        "id": "social",
+        "label": "Social",
+        "type": "domain",
+        "description": "Communication, leadership, teaching, persuasion",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#E67E22"
       }
     },
     {
       "data": {
-        "id": "Active Listening",
-        "label": "Active Listening",
+        "id": "emotional",
+        "label": "Emotional",
+        "type": "domain",
+        "description": "Self-awareness, regulation, resilience, mindfulness",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#E91E63"
       }
     },
     {
       "data": {
-        "id": "Critical Thinking",
-        "label": "Critical Thinking",
+        "id": "technical",
+        "label": "Technical",
+        "type": "domain",
+        "description": "Engineering, programming, craftsmanship, tool use, mechanics",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#607D8B"
       }
     },
     {
       "data": {
-        "id": "Creativity",
-        "label": "Creativity",
+        "id": "fieldcraft",
+        "label": "Fieldcraft",
+        "type": "domain",
+        "description": "Outdoor skills, navigation, bushcraft, survival, ecology",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#4A7C59"
       }
     },
     {
       "data": {
-        "id": "Strategic Planning",
-        "label": "Strategic Planning",
+        "id": "practical",
+        "label": "Practical",
+        "type": "domain",
+        "description": "Life management, finance, cooking, health, driving",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#F39C12"
       }
     },
     {
       "data": {
-        "id": "Innovation",
-        "label": "Innovation",
+        "id": "spiritual",
+        "label": "Spiritual",
+        "type": "domain",
+        "description": "Contemplative practice, ethics, philosophy, faith traditions",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "color": "#9B59B6"
+      }
+    },
+
+    {
+      "data": {
+        "id": "martial-arts",
+        "label": "Martial Arts",
+        "type": "category",
+        "domain": "physical",
+        "description": "Combat disciplines and fighting systems"
       }
     },
     {
       "data": {
-        "id": "Empathy",
-        "label": "Empathy",
-        "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "id": "marksmanship",
+        "label": "Marksmanship",
+        "type": "category",
+        "domain": "physical",
+        "description": "Precision shooting disciplines"
       }
     },
     {
       "data": {
-        "id": "Conflict Resolution",
-        "label": "Conflict Resolution",
-        "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "id": "analysis",
+        "label": "Analysis",
+        "type": "category",
+        "domain": "cognitive",
+        "description": "Breaking down complex systems and behaviors"
       }
     },
     {
       "data": {
-        "id": "Leadership",
+        "id": "research",
+        "label": "Research",
+        "type": "category",
+        "domain": "cognitive",
+        "description": "Finding, evaluating, and synthesizing information"
+      }
+    },
+    {
+      "data": {
+        "id": "writing",
+        "label": "Writing",
+        "type": "category",
+        "domain": "creative",
+        "description": "Written expression and composition"
+      }
+    },
+    {
+      "data": {
+        "id": "interpersonal",
+        "label": "Interpersonal",
+        "type": "category",
+        "domain": "social",
+        "description": "Influencing and working with others"
+      }
+    },
+    {
+      "data": {
+        "id": "education",
+        "label": "Education",
+        "type": "category",
+        "domain": "social",
+        "description": "Transferring knowledge and developing others"
+      }
+    },
+    {
+      "data": {
+        "id": "inner-strength",
+        "label": "Inner Strength",
+        "type": "category",
+        "domain": "emotional",
+        "description": "Mental toughness and emotional endurance"
+      }
+    },
+    {
+      "data": {
+        "id": "software",
+        "label": "Software & Computing",
+        "type": "category",
+        "domain": "technical",
+        "description": "Programming, architecture, and digital systems"
+      }
+    },
+    {
+      "data": {
+        "id": "trades",
+        "label": "Trades & Craftsmanship",
+        "type": "category",
+        "domain": "technical",
+        "description": "Hands-on building, repair, and fabrication"
+      }
+    },
+    {
+      "data": {
+        "id": "comms",
+        "label": "Communications",
+        "type": "category",
+        "domain": "technical",
+        "description": "Radio, signals, and communication systems"
+      }
+    },
+    {
+      "data": {
+        "id": "navigation",
+        "label": "Navigation",
+        "type": "category",
+        "domain": "fieldcraft",
+        "description": "Skills for finding your way"
+      }
+    },
+    {
+      "data": {
+        "id": "bushcraft",
+        "label": "Bushcraft",
+        "type": "category",
+        "domain": "fieldcraft",
+        "description": "Wilderness survival and self-reliance"
+      }
+    },
+    {
+      "data": {
+        "id": "reconnaissance",
+        "label": "Reconnaissance",
+        "type": "category",
+        "domain": "fieldcraft",
+        "description": "Observation, intelligence gathering, and patrol"
+      }
+    },
+    {
+      "data": {
+        "id": "overland",
+        "label": "Overland",
+        "type": "category",
+        "domain": "fieldcraft",
+        "description": "Vehicle-based travel over rough terrain"
+      }
+    },
+    {
+      "data": {
+        "id": "health",
+        "label": "Health",
+        "type": "category",
+        "domain": "practical",
+        "description": "Physical wellbeing and medical basics"
+      }
+    },
+    {
+      "data": {
+        "id": "finance",
+        "label": "Finance",
+        "type": "category",
+        "domain": "practical",
+        "description": "Money management, tax, and wealth building"
+      }
+    },
+    {
+      "data": {
+        "id": "transportation",
+        "label": "Transportation",
+        "type": "category",
+        "domain": "practical",
+        "description": "Getting from A to B safely"
+      }
+    },
+    {
+      "data": {
+        "id": "faith",
+        "label": "Faith & Tradition",
+        "type": "category",
+        "domain": "spiritual",
+        "description": "Religious and spiritual practices"
+      }
+    },
+    {
+      "data": {
+        "id": "inquiry",
+        "label": "Inquiry",
+        "type": "category",
+        "domain": "spiritual",
+        "description": "Philosophical and existential exploration"
+      }
+    },
+
+    {
+      "data": {
+        "id": "bjj",
+        "label": "Jiu-Jitsu",
+        "type": "skill",
+        "domain": "physical",
+        "category": "martial-arts",
+        "description": "Ground-based grappling martial art",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["combat", "grappling"]
+      }
+    },
+    {
+      "data": {
+        "id": "pistol",
+        "label": "Pistol",
+        "type": "skill",
+        "domain": "physical",
+        "category": "marksmanship",
+        "description": "Handgun target shooting fundamentals and accuracy",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["shooting", "tactical"]
+      }
+    },
+    {
+      "data": {
+        "id": "long-range",
+        "label": "Long Range Precision",
+        "type": "skill",
+        "domain": "physical",
+        "category": "marksmanship",
+        "description": "Precision rifle shooting at extended distances",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["shooting", "tactical", "precision"]
+      }
+    },
+    {
+      "data": {
+        "id": "behavioral-psych",
+        "label": "Behavioral Psychology",
+        "type": "skill",
+        "domain": "cognitive",
+        "category": "analysis",
+        "description": "Understanding and predicting human behavior patterns",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["psychology", "analysis"]
+      }
+    },
+    {
+      "data": {
+        "id": "systems-analysis",
+        "label": "Systems Analysis",
+        "type": "skill",
+        "domain": "cognitive",
+        "category": "analysis",
+        "description": "Evaluating complex systems, identifying components and interactions",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["systems", "analysis"]
+      }
+    },
+    {
+      "data": {
+        "id": "deep-research",
+        "label": "Deep Research",
+        "type": "skill",
+        "domain": "cognitive",
+        "category": "research",
+        "description": "Deep researching, fact finding, and source evaluation",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["research", "investigation"]
+      }
+    },
+    {
+      "data": {
+        "id": "writing-skill",
+        "label": "Writing",
+        "type": "skill",
+        "domain": "creative",
+        "category": "writing",
+        "description": "Written expression, composition, and storytelling",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["creative", "communication"]
+      }
+    },
+    {
+      "data": {
+        "id": "persuasion",
+        "label": "Persuasion",
+        "type": "skill",
+        "domain": "social",
+        "category": "interpersonal",
+        "description": "Influencing others' beliefs, attitudes, and actions",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["influence", "communication"]
+      }
+    },
+    {
+      "data": {
+        "id": "leadership",
         "label": "Leadership",
+        "type": "skill",
+        "domain": "social",
+        "category": "interpersonal",
+        "description": "Guiding, motivating, and directing others toward goals",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["management", "influence"]
       }
     },
     {
       "data": {
-        "id": "Mentoring",
-        "label": "Mentoring",
+        "id": "teaching",
+        "label": "Teaching",
+        "type": "skill",
+        "domain": "social",
+        "category": "education",
+        "description": "Transferring knowledge and developing others' capabilities",
         "image": "static/images/skills/skill_default.png",
-        "proficiency": {
-          "min": 1,
-          "max": "∞",
-          "current": 0
-        }
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["education", "communication"]
+      }
+    },
+    {
+      "data": {
+        "id": "resilience",
+        "label": "Resilience",
+        "type": "skill",
+        "domain": "emotional",
+        "category": "inner-strength",
+        "description": "Recovering from setbacks, adapting to adversity",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["mental-toughness", "adaptability"]
+      }
+    },
+    {
+      "data": {
+        "id": "ai",
+        "label": "AI",
+        "type": "skill",
+        "domain": "technical",
+        "category": "software",
+        "description": "Artificial intelligence concepts, tools, and applications",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["technology", "computing"]
+      }
+    },
+    {
+      "data": {
+        "id": "solution-arch",
+        "label": "Solution Architecture",
+        "type": "skill",
+        "domain": "technical",
+        "category": "software",
+        "description": "Designing technical systems and integration strategies",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["architecture", "systems"]
+      }
+    },
+    {
+      "data": {
+        "id": "carpentry",
+        "label": "Carpentry",
+        "type": "skill",
+        "domain": "technical",
+        "category": "trades",
+        "description": "Woodworking, framing, and structural construction",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["craftsmanship", "construction"]
+      }
+    },
+    {
+      "data": {
+        "id": "welding",
+        "label": "Welding",
+        "type": "skill",
+        "domain": "technical",
+        "category": "trades",
+        "description": "Joining metals through fusion techniques",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["craftsmanship", "fabrication"]
+      }
+    },
+    {
+      "data": {
+        "id": "vehicle-mech",
+        "label": "Vehicle Mechanics",
+        "type": "skill",
+        "domain": "technical",
+        "category": "trades",
+        "description": "Automotive diagnosis, repair, and maintenance",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["automotive", "repair"]
+      }
+    },
+    {
+      "data": {
+        "id": "ham-radio",
+        "label": "HAM Radio",
+        "type": "skill",
+        "domain": "technical",
+        "category": "comms",
+        "description": "Amateur radio operation, licensing, and communication",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["radio", "communications"]
+      }
+    },
+    {
+      "data": {
+        "id": "land-nav",
+        "label": "Land Navigation",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "navigation",
+        "description": "Map reading, compass use, terrain association",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["tactical", "outdoors"]
+      }
+    },
+    {
+      "data": {
+        "id": "shelter",
+        "label": "Shelter Building",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "bushcraft",
+        "description": "Constructing emergency and semi-permanent shelters",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["survival", "outdoors"]
+      }
+    },
+    {
+      "data": {
+        "id": "fire",
+        "label": "Fire Starting",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "bushcraft",
+        "description": "Creating and maintaining fire using various methods",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["survival", "outdoors"]
+      }
+    },
+    {
+      "data": {
+        "id": "knot-tying",
+        "label": "Knot Tying",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "bushcraft",
+        "description": "Tying functional knots for various applications",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["survival", "practical"]
+      }
+    },
+    {
+      "data": {
+        "id": "recce",
+        "label": "Recce",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "reconnaissance",
+        "description": "Reconnaissance, observation, intelligence gathering",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["tactical", "observation"]
+      }
+    },
+    {
+      "data": {
+        "id": "offroading",
+        "label": "Offroading",
+        "type": "skill",
+        "domain": "fieldcraft",
+        "category": "overland",
+        "description": "Vehicle operation over rough and unpaved terrain",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["vehicles", "outdoors"]
+      }
+    },
+    {
+      "data": {
+        "id": "first-aid",
+        "label": "First Aid",
+        "type": "skill",
+        "domain": "practical",
+        "category": "health",
+        "description": "Emergency medical response and basic care",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["medical", "emergency"]
+      }
+    },
+    {
+      "data": {
+        "id": "nutrition",
+        "label": "Nutrition",
+        "type": "skill",
+        "domain": "practical",
+        "category": "health",
+        "description": "Understanding dietary needs and optimizing intake",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["health", "wellness"]
+      }
+    },
+    {
+      "data": {
+        "id": "finances",
+        "label": "Finances",
+        "type": "skill",
+        "domain": "practical",
+        "category": "finance",
+        "description": "Tax optimization, investing, trusts, and wealth management",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["money", "planning"]
+      }
+    },
+    {
+      "data": {
+        "id": "driving",
+        "label": "Driving",
+        "type": "skill",
+        "domain": "practical",
+        "category": "transportation",
+        "description": "Operating motor vehicles safely on public roads",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["transportation", "daily-life"]
+      }
+    },
+    {
+      "data": {
+        "id": "shintoism",
+        "label": "Shintoism",
+        "type": "skill",
+        "domain": "spiritual",
+        "category": "faith",
+        "description": "Study and practice of Shinto traditions and rituals",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["religion", "japanese"]
+      }
+    },
+    {
+      "data": {
+        "id": "philosophy",
+        "label": "Philosophy",
+        "type": "skill",
+        "domain": "spiritual",
+        "category": "inquiry",
+        "description": "Systematic examination of fundamental questions about existence, knowledge, and ethics",
+        "image": "static/images/skills/skill_default.png",
+        "proficiency": { "level": 0, "scale": ["novice","beginner","competent","proficient","expert","master"] },
+        "tags": ["thinking", "existential"]
       }
     }
   ],
   "edges": [
-    {
-      "data": {
-        "source": "Basic Skills",
-        "target": "Communication"
-      }
-    },
-    {
-      "data": {
-        "source": "Basic Skills",
-        "target": "Problem Solving"
-      }
-    },
-    {
-      "data": {
-        "source": "Communication",
-        "target": "Public Speaking"
-      }
-    },
-    {
-      "data": {
-        "source": "Communication",
-        "target": "Active Listening"
-      }
-    },
-    {
-      "data": {
-        "source": "Problem Solving",
-        "target": "Critical Thinking"
-      }
-    },
-    {
-      "data": {
-        "source": "Problem Solving",
-        "target": "Creativity"
-      }
-    },
-    {
-      "data": {
-        "source": "Active Listening",
-        "target": "Empathy"
-      }
-    },
-    {
-      "data": {
-        "source": "Critical Thinking",
-        "target": "Strategic Planning"
-      }
-    },
-    {
-      "data": {
-        "source": "Creativity",
-        "target": "Innovation"
-      }
-    },
-    {
-      "data": {
-        "source": "Strategic Planning",
-        "target": "Leadership"
-      }
-    },
-    {
-      "data": {
-        "source": "Empathy",
-        "target": "Conflict Resolution"
-      }
-    },
-    {
-      "data": {
-        "source": "Leadership",
-        "target": "Mentoring"
-      }
-    }
+    { "data": { "source": "physical", "target": "martial-arts", "type": "hierarchy" } },
+    { "data": { "source": "physical", "target": "marksmanship", "type": "hierarchy" } },
+    { "data": { "source": "cognitive", "target": "analysis", "type": "hierarchy" } },
+    { "data": { "source": "cognitive", "target": "research", "type": "hierarchy" } },
+    { "data": { "source": "creative", "target": "writing", "type": "hierarchy" } },
+    { "data": { "source": "social", "target": "interpersonal", "type": "hierarchy" } },
+    { "data": { "source": "social", "target": "education", "type": "hierarchy" } },
+    { "data": { "source": "emotional", "target": "inner-strength", "type": "hierarchy" } },
+    { "data": { "source": "technical", "target": "software", "type": "hierarchy" } },
+    { "data": { "source": "technical", "target": "trades", "type": "hierarchy" } },
+    { "data": { "source": "technical", "target": "comms", "type": "hierarchy" } },
+    { "data": { "source": "fieldcraft", "target": "navigation", "type": "hierarchy" } },
+    { "data": { "source": "fieldcraft", "target": "bushcraft", "type": "hierarchy" } },
+    { "data": { "source": "fieldcraft", "target": "reconnaissance", "type": "hierarchy" } },
+    { "data": { "source": "fieldcraft", "target": "overland", "type": "hierarchy" } },
+    { "data": { "source": "practical", "target": "health", "type": "hierarchy" } },
+    { "data": { "source": "practical", "target": "finance", "type": "hierarchy" } },
+    { "data": { "source": "practical", "target": "transportation", "type": "hierarchy" } },
+    { "data": { "source": "spiritual", "target": "faith", "type": "hierarchy" } },
+    { "data": { "source": "spiritual", "target": "inquiry", "type": "hierarchy" } },
+
+    { "data": { "source": "martial-arts", "target": "bjj", "type": "hierarchy" } },
+    { "data": { "source": "marksmanship", "target": "pistol", "type": "hierarchy" } },
+    { "data": { "source": "marksmanship", "target": "long-range", "type": "hierarchy" } },
+    { "data": { "source": "analysis", "target": "behavioral-psych", "type": "hierarchy" } },
+    { "data": { "source": "analysis", "target": "systems-analysis", "type": "hierarchy" } },
+    { "data": { "source": "research", "target": "deep-research", "type": "hierarchy" } },
+    { "data": { "source": "writing", "target": "writing-skill", "type": "hierarchy" } },
+    { "data": { "source": "interpersonal", "target": "persuasion", "type": "hierarchy" } },
+    { "data": { "source": "interpersonal", "target": "leadership", "type": "hierarchy" } },
+    { "data": { "source": "education", "target": "teaching", "type": "hierarchy" } },
+    { "data": { "source": "inner-strength", "target": "resilience", "type": "hierarchy" } },
+    { "data": { "source": "software", "target": "ai", "type": "hierarchy" } },
+    { "data": { "source": "software", "target": "solution-arch", "type": "hierarchy" } },
+    { "data": { "source": "trades", "target": "carpentry", "type": "hierarchy" } },
+    { "data": { "source": "trades", "target": "welding", "type": "hierarchy" } },
+    { "data": { "source": "trades", "target": "vehicle-mech", "type": "hierarchy" } },
+    { "data": { "source": "comms", "target": "ham-radio", "type": "hierarchy" } },
+    { "data": { "source": "navigation", "target": "land-nav", "type": "hierarchy" } },
+    { "data": { "source": "bushcraft", "target": "shelter", "type": "hierarchy" } },
+    { "data": { "source": "bushcraft", "target": "fire", "type": "hierarchy" } },
+    { "data": { "source": "bushcraft", "target": "knot-tying", "type": "hierarchy" } },
+    { "data": { "source": "reconnaissance", "target": "recce", "type": "hierarchy" } },
+    { "data": { "source": "overland", "target": "offroading", "type": "hierarchy" } },
+    { "data": { "source": "health", "target": "first-aid", "type": "hierarchy" } },
+    { "data": { "source": "health", "target": "nutrition", "type": "hierarchy" } },
+    { "data": { "source": "finance", "target": "finances", "type": "hierarchy" } },
+    { "data": { "source": "transportation", "target": "driving", "type": "hierarchy" } },
+    { "data": { "source": "faith", "target": "shintoism", "type": "hierarchy" } },
+    { "data": { "source": "inquiry", "target": "philosophy", "type": "hierarchy" } },
+
+    { "data": { "source": "land-nav", "target": "recce", "type": "prerequisite" } },
+    { "data": { "source": "driving", "target": "offroading", "type": "prerequisite" } },
+
+    { "data": { "source": "behavioral-psych", "target": "persuasion", "type": "complements" } },
+    { "data": { "source": "leadership", "target": "resilience", "type": "complements" } },
+    { "data": { "source": "systems-analysis", "target": "solution-arch", "type": "complements" } },
+    { "data": { "source": "knot-tying", "target": "first-aid", "type": "cross-domain", "strength": "moderate" } },
+    { "data": { "source": "offroading", "target": "vehicle-mech", "type": "cross-domain", "strength": "moderate" } },
+    { "data": { "source": "nutrition", "target": "resilience", "type": "cross-domain", "strength": "light" } },
+    { "data": { "source": "philosophy", "target": "behavioral-psych", "type": "cross-domain", "strength": "moderate" } }
   ]
 }

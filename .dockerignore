@@ -1,0 +1,11 @@
+.venv
+.git
+.beans
+.vscode
+docs
+__pycache__
+*.py
+*.md
+.beans.yml
+.gitignore
+.dockerignore
