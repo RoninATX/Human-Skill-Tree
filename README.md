@@ -1,45 +1,39 @@
 # Human Skill Tree
 
-A personal skill tree visualization — static HTML/JS, no backend required.
+A personal skill tree visualization — static HTML/JS, no server required.
 
 ## Quick Start
 
-Serve the files with any static server:
+Just open `index.html` in your browser. That's it.
 
-```bash
-python -m http.server
-# or: npx serve
-```
-
-Then open `http://localhost:8000`.
+(Or serve it: `npx serve` / `python -m http.server`)
 
 ## Structure
 
 ```
-index.html              # Main page
+index.html                 # Main page
 static/
-  css/styles.css        # Theme + layout
-  js/visualization.js   # Cytoscape graph logic
-  data/graph_data.json  # Skill data (source of truth)
-  images/               # Node icons
+  css/styles.css           # Theme + layout
+  js/visualization.js      # Cytoscape graph + skill data
+  images/                  # Node icons
 ```
 
 ## Customizing Skills
 
-Edit `static/data/graph_data.json`. Each node needs:
+Edit the `graphData` object at the top of `static/js/visualization.js`:
 
-```json
-{
-  "data": {
-    "id": "unique-id",
-    "label": "Skill Name",
-    "proficiency": { "min": 0, "max": 10 },
-    "image": "static/images/icon.svg"
-  }
-}
+```js
+const graphData = {
+    nodes: [
+        { data: { id: "skill-id", label: "Display Name", proficiency: { min: 1, max: 10 }, image: "static/images/icon.png" } },
+        // ...
+    ],
+    edges: [
+        { data: { source: "parent-id", target: "child-id" } },
+        // ...
+    ]
+};
 ```
-
-Edges link skills: `{ "data": { "source": "parent-id", "target": "child-id" } }`
 
 ## Dependencies (loaded via CDN)
 
