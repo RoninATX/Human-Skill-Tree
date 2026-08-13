@@ -19,11 +19,24 @@ PORT="${2:-8000}"
 URL="http://localhost:$PORT"
 
 pick_python() {
-    if command -v python >/dev/null 2>&1; then echo python
-    elif command -v py >/dev/null 2>&1; then echo py
-    elif command -v python3 >/dev/null 2>&1; then echo python3
-    else echo "ERROR: no python found on PATH" >&2; exit 1
-    fi
+    # Accept only interpreters that provide Python 3's http.server module;
+    # a bare `python` can still be Python 2 on some systems.
+    local c
+    for c in python py python3; do
+        if command -v "$c" >/dev/null 2>&1 && "$c" -c "import http.server" >/dev/null 2>&1; then
+            echo "$c"
+            return 0
+        fi
+    done
+    echo "ERROR: no Python 3 interpreter found on PATH (tried: python, py, python3)" >&2
+    exit 1
+}
+
+require_curl() {
+    command -v curl >/dev/null 2>&1 || {
+        echo "ERROR: curl is required for health checks but was not found on PATH." >&2
+        exit 1
+    }
 }
 
 is_running() {
@@ -33,9 +46,9 @@ is_running() {
 health_check() {
     # Wait up to ~5s for the server to answer, then verify it serves the app.
     for _ in 1 2 3 4 5 6 7 8 9 10; do
-        if curl -sf -o /dev/null "$URL/index.html"; then
-            curl -sf -o /dev/null "$URL/static/data/graph_data.json" \
-                && curl -sf -o /dev/null "$URL/static/js/visualization.js"
+        if curl -sf -o /dev/null --max-time 2 "$URL/index.html"; then
+            curl -sf -o /dev/null --max-time 2 "$URL/static/data/graph_data.json" \
+                && curl -sf -o /dev/null --max-time 2 "$URL/static/js/visualization.js"
             return $?
         fi
         sleep 0.5
@@ -44,6 +57,7 @@ health_check() {
 }
 
 cmd_start() {
+    require_curl
     if is_running; then
         if curl -sf -o /dev/null --max-time 1 "$URL/index.html"; then
             echo "Already running (pid $(cat "$PIDFILE")) at $URL"
@@ -85,9 +99,10 @@ cmd_stop() {
 }
 
 cmd_status() {
+    require_curl
     if is_running; then
         echo "Running (pid $(cat "$PIDFILE")) - probing $URL"
-        curl -sf -o /dev/null "$URL/index.html" && echo "Health: OK" || echo "Health: FAIL (process up, not answering)"
+        curl -sf -o /dev/null --max-time 2 "$URL/index.html" && echo "Health: OK" || echo "Health: FAIL (process up, not answering)"
     else
         echo "Not running."
     fi
