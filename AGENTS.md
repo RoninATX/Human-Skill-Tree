@@ -21,7 +21,7 @@ change, etc.), update the matching file in the same change.
 
 - Serve for development: `python -m http.server`, then http://localhost:8000
 - Serve via Docker: `docker compose up`, then http://localhost:3123
-- Session startup: `beans prime` (loads task-tracking context; all work is tracked in beans, and bean files are committed with the code)
+- Session startup: `beans prime` (loads task-tracking context; all work is tracked in beans). The repo is public, so `.beans/` is git-ignored — task data is local-only; commit code without bean files.
 
 ## Design philosophy
 
