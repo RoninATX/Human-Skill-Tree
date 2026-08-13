@@ -35,11 +35,15 @@ A web-based skill tree visualization tool that displays hierarchical skill relat
 
 ## Setup
 1. Ensure all files are in their correct locations
-2. Run a local web server:
+2. Start the dev server:
    ```bash
-   python -m http.server
+   scripts/serve.sh start   # or: python -m http.server
    ```
 3. Access the visualization at `http://localhost:8000`
+
+`scripts/serve.sh` also provides `stop`, `status`, and `restart`, and runs a
+health check on startup. Docker is available as an alternative:
+`docker compose up` serves on `http://localhost:3123`.
 
 ## Development
 - VS Code launch configuration included for Python HTTP server

@@ -15,6 +15,10 @@ __pycache__/
 # Local task tracker data (public repo; planning stays local)
 .beans/
 
+# Dev server runtime state (scripts/serve.sh)
+.serve.pid
+.serve.log
+
 # Distribution / packaging
 dist/
 build/
