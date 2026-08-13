@@ -1,6 +1,7 @@
 # Virtual Environment
 venv/
 env/
+.venv/
 .env/
 
 # Python
@@ -8,12 +9,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# VS Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# Agent knowledge (local-by-design: see AGENTS.md)
+.know/
+
+# Local task tracker data (public repo; planning stays local)
+.beans/
 
 # Distribution / packaging
 dist/
