@@ -13,9 +13,10 @@ meaningfully change the underlying surface (new route, new env var, schema
 change, etc.), update the matching file in the same change.
 
 - `architecture.md` — App structure: Cytoscape.js frontend, theming, graph data flow, and the legacy Python generator scripts. Open when touching `index.html`, `static/`, or the serving setup.
+- `profile-auth.md` — Local-first accounts, login/signup semantics, profile panel, and the interest tag cloud. Open when touching auth, the profile UI, or user records.
 - `data-model.md` — Node/edge schema, hierarchy rules, ID conventions, proficiency scale. Open when adding skills, categories, domains, or edge types to `graph_data.json`.
 - `taxonomy.md` — The 9 domains and the design decisions behind them. Open when placing skills, proposing new domains, or questioning category boundaries.
-- `tooling.md` — How to run/serve the app, the venv and its PATH quirk, and the beans workflow. Open for setup, Docker, or task-tracking questions.
+- `tooling.md` — How to run/serve the app (serve.sh, Python env, Docker), and the beans workflow. Open for setup, serving, or task-tracking questions.
 
 ## Commands
 
