@@ -273,3 +273,209 @@ body {
     color: var(--text-color);
     opacity: 0.8;
 }
+
+/* Profile & auth modal */
+.profile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-overlay.hidden {
+    display: none;
+}
+
+.profile-modal {
+    position: relative;
+    width: min(560px, 92vw);
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--sidebar-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.profile-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.profile-close:hover { opacity: 1; }
+
+.profile-body { padding: 28px; }
+
+/* Auth */
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.auth-tab.active {
+    border-color: var(--text-color);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-form input {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.auth-error {
+    margin: 0;
+    color: #c0392b;
+    font-size: 13px;
+}
+
+.auth-submit {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: var(--text-color);
+    color: var(--bg-color);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-note {
+    margin-top: 14px;
+    font-size: 12px;
+    opacity: 0.55;
+    text-align: center;
+}
+
+/* Profile */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button-bg);
+    font-size: 28px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.profile-name { margin: 0; }
+.profile-email { margin: 2px 0 0; opacity: 0.7; font-size: 13px; }
+.profile-since { margin: 2px 0 0; opacity: 0.5; font-size: 12px; }
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin: 18px 0;
+    flex-wrap: wrap;
+}
+
+.profile-action {
+    padding: 7px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.profile-action:hover { background: var(--button-hover); }
+.profile-action.danger:hover { border-color: #c0392b; color: #c0392b; }
+
+/* Interest tag cloud */
+.profile-interests h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+.interest-count {
+    font-size: 12px;
+    font-weight: normal;
+    opacity: 0.6;
+}
+
+.interest-group h4 {
+    margin: 14px 0 6px;
+    font-size: 13px;
+    padding-left: 8px;
+    border-left: 3px solid;
+}
+
+.interest-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.interest-chip {
+    padding: 4px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.interest-chip:hover { transform: translateY(-1px); }
+
+.interest-chip.selected {
+    color: #fff;
+    border-color: transparent;
+    font-weight: bold;
+}
+
+.interest-add { margin-top: 6px; }
+
+.interest-add input {
+    padding: 4px 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 12px;
+    width: 140px;
+}
