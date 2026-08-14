@@ -45,6 +45,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     overlay.querySelector('.profile-close').addEventListener('click', closeModal);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+    // Escape user-controlled strings before they go anywhere near innerHTML.
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function syncInterestCount() {
+        const el = body.querySelector('.interest-count');
+        const user = Auth.currentUser();
+        if (el && user) el.textContent = `${(user.interests || []).length} selected`;
+    }
+
     // ---------- avatar ----------
     function avatarHtml(user, size = 72) {
         if (user && user.avatar) {
@@ -150,6 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Auth.updateUser(u.email, { interests });
                     chip.classList.toggle('selected');
                     chip.style.background = chip.classList.contains('selected') ? domain.color : '';
+                    syncInterestCount();
                 });
                 cloud.appendChild(chip);
             }
@@ -167,6 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 Auth.updateUser(u.email, { interests });
                 selected.set(tag, domain.id);
                 renderInterests(Auth.currentUser(), container);
+                syncInterestCount();
             });
 
             group.appendChild(cloud);
@@ -186,8 +200,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="profile-header">
                 ${avatarHtml(user)}
                 <div>
-                    <h3 class="profile-name">${user.name}</h3>
-                    <p class="profile-email">${user.email}</p>
+                    <h3 class="profile-name">${escapeHtml(user.name)}</h3>
+                    <p class="profile-email">${escapeHtml(user.email)}</p>
                     <p class="profile-since">Member since ${new Date(user.createdAt).toLocaleDateString()}</p>
                 </div>
             </div>
