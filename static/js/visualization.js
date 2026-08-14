@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        // Re-evaluate function-valued styles (hierarchy edge color).
+        cy.style().update();
     });
 
     function updateThemeIcon(theme) {
@@ -170,8 +172,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     'curve-style': 'taxi',
                     'taxi-direction': 'vertical',
                     'taxi-turn': 20,
-                    'line-color': '#555',
-                    'line-opacity': 0.6,
+                    // Theme-aware: dark grey disappears on the dark background.
+                    'line-color': function() { return edgeLineColor(); },
+                    'line-opacity': 0.7,
                     'width': 2,
                     'target-arrow-shape': 'none'
                 }
@@ -223,6 +226,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Start with no layout — we'll run it after filtering
         layout: { name: 'preset' }
     });
+
+    // Hierarchy edge color follows the theme (re-evaluated via cy.style().update()
+    // when the theme toggle flips data-theme).
+    function edgeLineColor() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? '#a0a0a0' : '#555';
+    }
 
     // ===== NAVIGATION STATE =====
     // Levels: 'domains' | 'categories' | 'skills'
@@ -285,6 +294,40 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         updateBreadcrumb();
     }
+
+    // ===== POST-LAYOUT EVEN SPACING =====
+    // Dagre assigns ranks but can pack wide boxes tightly; after each layout,
+    // redistribute every rank evenly across the available viewport so nodes
+    // never overlap regardless of window size.
+    function spreadRanksEvenly() {
+        const visible = cy.nodes().not('.hidden');
+        if (!visible.length) return;
+
+        const pad = 80;
+        const width = Math.max(cy.width() - pad * 2, 200);
+        const height = Math.max(cy.height() - pad * 2, 160);
+
+        // Group nodes into ranks by their laid-out y position.
+        const ranks = [];
+        visible.forEach(n => {
+            const y = n.position('y');
+            let rank = ranks.find(r => Math.abs(r.y - y) < 1);
+            if (!rank) { rank = { y, nodes: [] }; ranks.push(rank); }
+            rank.nodes.push(n);
+        });
+        ranks.sort((a, b) => a.y - b.y);
+
+        ranks.forEach((rank, ri) => {
+            rank.nodes.sort((a, b) => a.position('x') - b.position('x'));
+            const y = pad + (ranks.length === 1 ? height / 2 : (height * ri) / (ranks.length - 1));
+            rank.nodes.forEach((n, ni) => {
+                const x = pad + (rank.nodes.length === 1 ? width / 2 : (width * ni) / (rank.nodes.length - 1));
+                n.animate({ position: { x, y } }, { duration: 250 });
+            });
+        });
+    }
+
+    cy.on('layoutstop', () => spreadRanksEvenly());
 
     // Called by profile.js when the session changes (login/logout/signup):
     // the overlay is per-user, so the graph must rebuild or the next user
