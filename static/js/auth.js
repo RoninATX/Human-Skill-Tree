@@ -151,7 +151,7 @@ const Auth = (() => {
         email = normalizeEmail(email);
         const users = loadUsers();
         if (!users[email]) throw new Error('Account not found.');
-        const allowed = ['name', 'avatar', 'interests'];
+        const allowed = ['name', 'avatar', 'interests', 'taxonomy'];
         for (const key of allowed) {
             if (key in patch) users[email][key] = patch[key];
         }

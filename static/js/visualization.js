@@ -27,23 +27,29 @@ document.addEventListener('DOMContentLoaded', async function() {
         themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
     }
 
-    // Fetch the graph data
+    // Fetch the graph data. The shipped JSON stays pristine; a logged-in
+    // user's category edits live in an overlay (taxonomy.js) applied on top.
     const response = await fetch('static/data/graph_data.json');
-    const graphData = await response.json();
+    const baseGraphData = await response.json();
+    const graphData = Taxonomy.apply(baseGraphData);
 
     // Build lookups
     const domainColors = {};
     const domainLabels = {};
     const categoryLabels = {};
-    graphData.nodes.forEach(n => {
-        if (n.data.type === 'domain') {
-            domainColors[n.data.id] = n.data.color;
-            domainLabels[n.data.id] = n.data.label;
-        }
-        if (n.data.type === 'category') {
-            categoryLabels[n.data.id] = n.data.label;
-        }
-    });
+    function rebuildLookups(data) {
+        Object.keys(categoryLabels).forEach(k => delete categoryLabels[k]);
+        data.nodes.forEach(n => {
+            if (n.data.type === 'domain') {
+                domainColors[n.data.id] = n.data.color;
+                domainLabels[n.data.id] = n.data.label;
+            }
+            if (n.data.type === 'category') {
+                categoryLabels[n.data.id] = n.data.label;
+            }
+        });
+    }
+    rebuildLookups(graphData);
 
     function getDomainColor(ele) {
         const data = ele.data();
@@ -351,6 +357,75 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    // ===== TAXONOMY EDITING =====
+    // Re-apply the user's overlay and re-render in place after an edit.
+    function reloadGraph(fallbackState) {
+        const patched = Taxonomy.apply(baseGraphData);
+        rebuildLookups(patched);
+        cy.elements().remove();
+        cy.add(patched);
+        // If the current view referenced a removed category, fall back.
+        if (navState.categoryId && !cy.getElementById(navState.categoryId).length) {
+            navState = fallbackState || { level: 'categories', domainId: navState.domainId, categoryId: null };
+        }
+        showView(navState);
+    }
+
+    function requireLogin() {
+        if (Auth.currentUser()) return true;
+        alert('Sign in (profile button, top right) to edit categories.');
+        return false;
+    }
+
+    function sidebarEditActions(data) {
+        if (data.type === 'domain') {
+            return `<div class="edit-actions">
+                <button class="profile-action" data-edit="add-category" data-domain="${data.id}">+ Add category</button>
+            </div>`;
+        }
+        if (data.type === 'category') {
+            return `<div class="edit-actions">
+                <button class="profile-action" data-edit="rename-category" data-id="${data.id}" data-domain="${data.domain}">Rename</button>
+                <button class="profile-action danger" data-edit="remove-category" data-id="${data.id}">Delete</button>
+            </div>`;
+        }
+        return '';
+    }
+
+    function bindEditActions(container) {
+        container.querySelectorAll('[data-edit]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!requireLogin()) return;
+                const action = btn.dataset.edit;
+                try {
+                    if (action === 'add-category') {
+                        const label = prompt(`New category name in ${domainLabels[btn.dataset.domain]}:`);
+                        if (!label) return;
+                        const description = prompt('Short description (optional):') || '';
+                        const id = Taxonomy.addCategory(baseGraphData, btn.dataset.domain, label, description);
+                        reloadGraph();
+                        showSidebarDetail(cy.getElementById(id).data());
+                    } else if (action === 'rename-category') {
+                        const current = categoryLabels[btn.dataset.id] || btn.dataset.id;
+                        const label = prompt('Rename category:', current);
+                        if (!label || label === current) return;
+                        Taxonomy.renameCategory(baseGraphData, btn.dataset.id, label);
+                        reloadGraph();
+                        showSidebarDetail(cy.getElementById(btn.dataset.id).data());
+                    } else if (action === 'remove-category') {
+                        const current = categoryLabels[btn.dataset.id] || btn.dataset.id;
+                        if (!confirm(`Delete category "${current}"?`)) return;
+                        Taxonomy.removeCategory(baseGraphData, btn.dataset.id);
+                        reloadGraph();
+                        resetSidebar();
+                    }
+                } catch (err) {
+                    alert(err.message);
+                }
+            });
+        });
+    }
+
     // ===== SIDEBAR DETAILS =====
     function showSidebarDetail(data) {
         const sidebarContent = document.querySelector('.sidebar-content');
@@ -365,6 +440,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <span class="node-type-badge" style="background:${data.color}">${data.type}</span>
                     <p>${data.description}</p>
                     <p class="hint">Click to explore categories</p>
+                    ${sidebarEditActions(data)}
                 </div>
             `;
         } else if (data.type === 'category') {
@@ -375,6 +451,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <p class="node-domain">${domainLabels[data.domain] || data.domain}</p>
                     <p>${data.description}</p>
                     <p class="hint">Click to explore skills</p>
+                    ${sidebarEditActions(data)}
                 </div>
             `;
         } else if (data.type === 'skill') {
@@ -403,6 +480,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
             `;
         }
+
+        bindEditActions(sidebarContent);
     }
 
     function resetSidebar() {

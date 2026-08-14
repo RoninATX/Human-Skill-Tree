@@ -479,3 +479,11 @@ body {
     font-size: 12px;
     width: 140px;
 }
+
+/* Taxonomy edit actions (sidebar) */
+.edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
