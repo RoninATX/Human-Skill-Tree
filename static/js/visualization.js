@@ -423,10 +423,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // ===== KEYBOARD NAVIGATION =====
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' || e.key === 'Backspace') {
-            e.preventDefault();
-            goBack();
-        }
+        if (e.key !== 'Escape' && e.key !== 'Backspace') return;
+        // Don't hijack typing in form fields (e.g. the profile modal's
+        // interest inputs) or Escape while a modal is open.
+        if (e.target.closest('input, textarea, [contenteditable]')) return;
+        const overlay = document.getElementById('profileOverlay');
+        if (overlay && !overlay.classList.contains('hidden')) return;
+        e.preventDefault();
+        goBack();
     });
 
     function goBack() {

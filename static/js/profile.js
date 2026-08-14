@@ -17,10 +17,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const domains = graphData.nodes
         .filter(n => n.data.type === 'domain')
         .map(n => ({ id: n.data.id, label: n.data.label, color: n.data.color }));
+    // A label can be both a category and a skill in the same domain (e.g.
+    // "Writing" in Creative) - dedupe so chips never repeat.
     const suggestionsByDomain = {};
     for (const n of graphData.nodes) {
         if ((n.data.type === 'category' || n.data.type === 'skill') && n.data.domain) {
-            (suggestionsByDomain[n.data.domain] ||= []).push(n.data.label);
+            const list = suggestionsByDomain[n.data.domain] || (suggestionsByDomain[n.data.domain] = []);
+            if (!list.includes(n.data.label)) list.push(n.data.label);
         }
     }
 
