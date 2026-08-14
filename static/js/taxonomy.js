@@ -85,17 +85,17 @@ const Taxonomy = (() => {
     }
 
     /** Labels of categories in a domain after the overlay is applied. */
-    function categoryLabelsIn(graphData, domainId) {
+    function categoryLabelsIn(graphData, domainId, excludeId = null) {
         return apply(graphData).nodes
-            .filter(n => n.data.type === 'category' && n.data.domain === domainId)
+            .filter(n => n.data.type === 'category' && n.data.domain === domainId && n.data.id !== excludeId)
             .map(n => n.data.label.toLowerCase());
     }
 
-    function assertUniqueLabel(graphData, domainId, label) {
+    function assertUniqueLabel(graphData, domainId, label, excludeId = null) {
         label = String(label || '').trim();
         if (!label) throw new Error('Category name cannot be empty.');
         if (label.length > 60) throw new Error('Category name must be 60 characters or fewer.');
-        if (categoryLabelsIn(graphData, domainId).includes(label.toLowerCase())) {
+        if (categoryLabelsIn(graphData, domainId, excludeId).includes(label.toLowerCase())) {
             throw new Error(`"${label}" already exists in that domain.`);
         }
         return label;
@@ -114,7 +114,9 @@ const Taxonomy = (() => {
     function renameCategory(graphData, categoryId, newLabel) {
         const cat = apply(graphData).nodes.find(n => n.data.id === categoryId && n.data.type === 'category');
         if (!cat) throw new Error('Category not found.');
-        newLabel = assertUniqueLabel(graphData, cat.data.domain, newLabel);
+        // excludeId: renaming to the same words with different casing or
+        // padding is a self-rename, not a duplicate.
+        newLabel = assertUniqueLabel(graphData, cat.data.domain, newLabel, categoryId);
         const overlay = getOverlay();
         overlay.renamed = { ...overlay.renamed, [categoryId]: newLabel };
         saveOverlay(overlay);

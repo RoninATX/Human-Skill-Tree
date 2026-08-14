@@ -286,6 +286,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         updateBreadcrumb();
     }
 
+    // Called by profile.js when the session changes (login/logout/signup):
+    // the overlay is per-user, so the graph must rebuild or the next user
+    // would see the previous account's categories.
+    window.HST_sessionChanged = function() {
+        reloadGraph();
+        resetSidebar();
+    };
+
     // ===== BREADCRUMB =====
     const breadcrumb = document.getElementById('breadcrumb');
 
@@ -298,14 +306,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (navState.domainId) {
             const color = domainColors[navState.domainId] || '#888';
-            const label = domainLabels[navState.domainId] || navState.domainId;
+            const label = escapeHtml(domainLabels[navState.domainId] || navState.domainId);
             const active = navState.level === 'categories' ? ' active' : '';
             html += `<span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>`;
             html += `<span class="breadcrumb-item${active}" data-action="domain" data-id="${navState.domainId}" style="color:${color}">${label}</span>`;
         }
 
         if (navState.categoryId) {
-            const label = categoryLabels[navState.categoryId] || navState.categoryId;
+            const label = escapeHtml(categoryLabels[navState.categoryId] || navState.categoryId);
             const color = domainColors[navState.domainId] || '#888';
             html += `<span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>`;
             html += `<span class="breadcrumb-item active" style="color:${color}">${label}</span>`;
@@ -356,6 +364,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             resetSidebar();
         }
     });
+
+    // Escape user-authored taxonomy text (labels, descriptions) before it
+    // goes anywhere near innerHTML.
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
 
     // ===== TAXONOMY EDITING =====
     // Re-apply the user's overlay and re-render in place after an edit.
@@ -432,13 +447,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         const sidebarHeader = document.querySelector('.sidebar-header h3');
 
         sidebar.classList.remove('collapsed');
-        sidebarHeader.textContent = data.label;
+        sidebarHeader.textContent = data.label; // textContent: never parsed as HTML
 
         if (data.type === 'domain') {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${data.color}">${data.type}</span>
-                    <p>${data.description}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <p class="hint">Click to explore categories</p>
                     ${sidebarEditActions(data)}
                 </div>
@@ -448,8 +463,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${color}">${data.type}</span>
-                    <p class="node-domain">${domainLabels[data.domain] || data.domain}</p>
-                    <p>${data.description}</p>
+                    <p class="node-domain">${escapeHtml(domainLabels[data.domain] || data.domain)}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <p class="hint">Click to explore skills</p>
                     ${sidebarEditActions(data)}
                 </div>
@@ -470,8 +485,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${color}">${data.type}</span>
-                    <p class="node-domain">${domainLabels[data.domain] || data.domain} / ${categoryLabels[data.category] || data.category}</p>
-                    <p>${data.description}</p>
+                    <p class="node-domain">${escapeHtml(domainLabels[data.domain] || data.domain)} / ${escapeHtml(categoryLabels[data.category] || data.category)}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <div class="proficiency-section">
                         <div class="proficiency-label">${levelLabel}</div>
                         <div class="proficiency-bar">${pips}</div>
