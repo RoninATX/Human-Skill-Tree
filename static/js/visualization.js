@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function() {
+    // Hoisted so handlers wired before the await (theme toggle) can check
+    // whether Cytoscape has finished initializing - a const in TDZ would
+    // throw a ReferenceError on an early theme click.
+    let cy = null;
+
     // Sidebar toggle functionality
     const sidebarCollapse = document.getElementById('sidebarCollapse');
     const sidebar = document.getElementById('sidebar');
@@ -21,29 +26,38 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        // Re-evaluate function-valued styles (hierarchy edge color) once the
+        // graph exists; before init there is nothing to restyle.
+        if (cy) cy.style().update();
     });
 
     function updateThemeIcon(theme) {
         themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
     }
 
-    // Fetch the graph data
+    // Fetch the graph data. The shipped JSON stays pristine; a logged-in
+    // user's category edits live in an overlay (taxonomy.js) applied on top.
     const response = await fetch('static/data/graph_data.json');
-    const graphData = await response.json();
+    const baseGraphData = await response.json();
+    const graphData = Taxonomy.apply(baseGraphData);
 
     // Build lookups
     const domainColors = {};
     const domainLabels = {};
     const categoryLabels = {};
-    graphData.nodes.forEach(n => {
-        if (n.data.type === 'domain') {
-            domainColors[n.data.id] = n.data.color;
-            domainLabels[n.data.id] = n.data.label;
-        }
-        if (n.data.type === 'category') {
-            categoryLabels[n.data.id] = n.data.label;
-        }
-    });
+    function rebuildLookups(data) {
+        Object.keys(categoryLabels).forEach(k => delete categoryLabels[k]);
+        data.nodes.forEach(n => {
+            if (n.data.type === 'domain') {
+                domainColors[n.data.id] = n.data.color;
+                domainLabels[n.data.id] = n.data.label;
+            }
+            if (n.data.type === 'category') {
+                categoryLabels[n.data.id] = n.data.label;
+            }
+        });
+    }
+    rebuildLookups(graphData);
 
     function getDomainColor(ele) {
         const data = ele.data();
@@ -51,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return domainColors[data.domain] || '#888';
     }
 
-    const cy = cytoscape({
+    cy = cytoscape({
         container: document.getElementById('cy'),
         elements: graphData,
 
@@ -164,8 +178,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     'curve-style': 'taxi',
                     'taxi-direction': 'vertical',
                     'taxi-turn': 20,
-                    'line-color': '#555',
-                    'line-opacity': 0.6,
+                    // Theme-aware: dark grey disappears on the dark background.
+                    'line-color': function() { return edgeLineColor(); },
+                    'line-opacity': 0.7,
                     'width': 2,
                     'target-arrow-shape': 'none'
                 }
@@ -217,6 +232,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Start with no layout — we'll run it after filtering
         layout: { name: 'preset' }
     });
+
+    // Hierarchy edge color follows the theme (re-evaluated via cy.style().update()
+    // when the theme toggle flips data-theme).
+    function edgeLineColor() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? '#a0a0a0' : '#555';
+    }
 
     // ===== NAVIGATION STATE =====
     // Levels: 'domains' | 'categories' | 'skills'
@@ -280,6 +301,53 @@ document.addEventListener('DOMContentLoaded', async function() {
         updateBreadcrumb();
     }
 
+    // ===== POST-LAYOUT EVEN SPACING =====
+    // Dagre assigns ranks but can pack wide boxes tightly; after each layout,
+    // redistribute every rank evenly across the available viewport so nodes
+    // never overlap regardless of window size.
+    function spreadRanksEvenly() {
+        const visible = cy.nodes().not('.hidden');
+        if (!visible.length) return;
+
+        const pad = 80;
+        const width = Math.max(cy.width() - pad * 2, 200);
+        const height = Math.max(cy.height() - pad * 2, 160);
+
+        // Group nodes into ranks by their laid-out y position.
+        const ranks = [];
+        visible.forEach(n => {
+            const y = n.position('y');
+            let rank = ranks.find(r => Math.abs(r.y - y) < 1);
+            if (!rank) { rank = { y, nodes: [] }; ranks.push(rank); }
+            rank.nodes.push(n);
+        });
+        ranks.sort((a, b) => a.y - b.y);
+
+        ranks.forEach((rank, ri) => {
+            rank.nodes.sort((a, b) => a.position('x') - b.position('x'));
+            const y = pad + (ranks.length === 1 ? height / 2 : (height * ri) / (ranks.length - 1));
+            rank.nodes.forEach((n, ni) => {
+                const x = pad + (rank.nodes.length === 1 ? width / 2 : (width * ni) / (rank.nodes.length - 1));
+                n.position({ x, y });
+            });
+        });
+
+        // The spread is computed in viewport pixels; refit the camera so the
+        // redistributed nodes are framed rather than left zoomed to dagre's
+        // tighter bounding box.
+        cy.animate({ fit: { eles: visible, padding: 60 } }, { duration: 250 });
+    }
+
+    cy.on('layoutstop', () => spreadRanksEvenly());
+
+    // Called by profile.js when the session changes (login/logout/signup):
+    // the overlay is per-user, so the graph must rebuild or the next user
+    // would see the previous account's categories.
+    window.HST_sessionChanged = function() {
+        reloadGraph();
+        resetSidebar();
+    };
+
     // ===== BREADCRUMB =====
     const breadcrumb = document.getElementById('breadcrumb');
 
@@ -292,14 +360,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (navState.domainId) {
             const color = domainColors[navState.domainId] || '#888';
-            const label = domainLabels[navState.domainId] || navState.domainId;
+            const label = escapeHtml(domainLabels[navState.domainId] || navState.domainId);
             const active = navState.level === 'categories' ? ' active' : '';
             html += `<span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>`;
             html += `<span class="breadcrumb-item${active}" data-action="domain" data-id="${navState.domainId}" style="color:${color}">${label}</span>`;
         }
 
         if (navState.categoryId) {
-            const label = categoryLabels[navState.categoryId] || navState.categoryId;
+            const label = escapeHtml(categoryLabels[navState.categoryId] || navState.categoryId);
             const color = domainColors[navState.domainId] || '#888';
             html += `<span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>`;
             html += `<span class="breadcrumb-item active" style="color:${color}">${label}</span>`;
@@ -312,9 +380,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             item.addEventListener('click', () => {
                 const action = item.dataset.action;
                 if (action === 'home') {
+                    cy.$(':selected').unselect();
                     showView({ level: 'domains', domainId: null, categoryId: null });
+                    resetSidebar();
                 } else if (action === 'domain') {
                     showView({ level: 'categories', domainId: item.dataset.id, categoryId: null });
+                    // Breadcrumb nav behaves like tapping the node: select it
+                    // and show its details instead of leaving a stale
+                    // selection from the deeper view.
+                    const node = cy.getElementById(item.dataset.id);
+                    if (node.length) {
+                        cy.$(':selected').unselect();
+                        node.select();
+                        showSidebarDetail(node.data());
+                    }
                 }
             });
         });
@@ -351,20 +430,123 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    // Escape user-authored taxonomy text (labels, descriptions) before it
+    // goes anywhere near innerHTML.
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c =>
+            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // ===== TAXONOMY EDITING =====
+    // Re-apply the user's overlay and re-render in place after an edit.
+    function reloadGraph(fallbackState) {
+        const patched = Taxonomy.apply(baseGraphData);
+        rebuildLookups(patched);
+        cy.elements().remove();
+        cy.add(patched);
+        // If the current view referenced a removed category, fall back.
+        if (navState.categoryId && !cy.getElementById(navState.categoryId).length) {
+            navState = fallbackState || { level: 'categories', domainId: navState.domainId, categoryId: null };
+        }
+        showView(navState);
+    }
+
+    function requireLogin() {
+        if (Auth.currentUser()) return true;
+        alert('Sign in (profile button, top right) to edit categories.');
+        return false;
+    }
+
+    function sidebarCategoryList(data) {
+        if (data.type !== 'domain') return '';
+        const cats = cy.nodes('[type="category"]').filter(n => n.data('domain') === data.id);
+        if (!cats.length) return '';
+        const items = cats
+            .map(c => `<button class="category-list-item" data-cat="${c.id()}">${escapeHtml(c.data('label'))}</button>`)
+            .join('');
+        return `<div class="category-list">
+            <div class="proficiency-label">Categories (${cats.length})</div>
+            ${items}
+        </div>`;
+    }
+
+    function sidebarEditActions(data) {
+        if (data.type === 'domain') {
+            return `<div class="edit-actions">
+                <button class="profile-action" data-edit="add-category" data-domain="${data.id}">+ Add category</button>
+            </div>`;
+        }
+        if (data.type === 'category') {
+            return `<div class="edit-actions">
+                <button class="profile-action" data-edit="rename-category" data-id="${data.id}" data-domain="${data.domain}">Rename</button>
+                <button class="profile-action danger" data-edit="remove-category" data-id="${data.id}">Delete</button>
+            </div>`;
+        }
+        return '';
+    }
+
+    function bindEditActions(container) {
+        // Category list items drill straight into the category's skills view.
+        container.querySelectorAll('[data-cat]').forEach(item => {
+            item.addEventListener('click', () => {
+                const node = cy.getElementById(item.dataset.cat);
+                if (!node.length) return;
+                const d = node.data();
+                showView({ level: 'skills', domainId: d.domain, categoryId: d.id });
+                cy.$(':selected').unselect();
+                node.select();
+                showSidebarDetail(d);
+            });
+        });
+        container.querySelectorAll('[data-edit]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!requireLogin()) return;
+                const action = btn.dataset.edit;
+                try {
+                    if (action === 'add-category') {
+                        const label = prompt(`New category name in ${domainLabels[btn.dataset.domain]}:`);
+                        if (!label) return;
+                        const description = prompt('Short description (optional):') || '';
+                        const id = Taxonomy.addCategory(baseGraphData, btn.dataset.domain, label, description);
+                        reloadGraph();
+                        showSidebarDetail(cy.getElementById(id).data());
+                    } else if (action === 'rename-category') {
+                        const current = categoryLabels[btn.dataset.id] || btn.dataset.id;
+                        const label = prompt('Rename category:', current);
+                        if (!label || label === current) return;
+                        Taxonomy.renameCategory(baseGraphData, btn.dataset.id, label);
+                        reloadGraph();
+                        showSidebarDetail(cy.getElementById(btn.dataset.id).data());
+                    } else if (action === 'remove-category') {
+                        const current = categoryLabels[btn.dataset.id] || btn.dataset.id;
+                        if (!confirm(`Delete category "${current}"?`)) return;
+                        Taxonomy.removeCategory(baseGraphData, btn.dataset.id);
+                        reloadGraph();
+                        resetSidebar();
+                    }
+                } catch (err) {
+                    alert(err.message);
+                }
+            });
+        });
+    }
+
     // ===== SIDEBAR DETAILS =====
     function showSidebarDetail(data) {
         const sidebarContent = document.querySelector('.sidebar-content');
         const sidebarHeader = document.querySelector('.sidebar-header h3');
 
         sidebar.classList.remove('collapsed');
-        sidebarHeader.textContent = data.label;
+        sidebarHeader.textContent = data.label; // textContent: never parsed as HTML
 
         if (data.type === 'domain') {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${data.color}">${data.type}</span>
-                    <p>${data.description}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <p class="hint">Click to explore categories</p>
+                    ${sidebarCategoryList(data)}
+                    ${sidebarEditActions(data)}
                 </div>
             `;
         } else if (data.type === 'category') {
@@ -372,9 +554,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${color}">${data.type}</span>
-                    <p class="node-domain">${domainLabels[data.domain] || data.domain}</p>
-                    <p>${data.description}</p>
+                    <p class="node-domain">${escapeHtml(domainLabels[data.domain] || data.domain)}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <p class="hint">Click to explore skills</p>
+                    ${sidebarEditActions(data)}
                 </div>
             `;
         } else if (data.type === 'skill') {
@@ -393,8 +576,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             sidebarContent.innerHTML = `
                 <div class="node-detail">
                     <span class="node-type-badge" style="background:${color}">${data.type}</span>
-                    <p class="node-domain">${domainLabels[data.domain] || data.domain} / ${categoryLabels[data.category] || data.category}</p>
-                    <p>${data.description}</p>
+                    <p class="node-domain">${escapeHtml(domainLabels[data.domain] || data.domain)} / ${escapeHtml(categoryLabels[data.category] || data.category)}</p>
+                    <p>${escapeHtml(data.description)}</p>
                     <div class="proficiency-section">
                         <div class="proficiency-label">${levelLabel}</div>
                         <div class="proficiency-bar">${pips}</div>
@@ -403,6 +586,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
             `;
         }
+
+        bindEditActions(sidebarContent);
     }
 
     function resetSidebar() {

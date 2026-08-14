@@ -119,6 +119,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (mode === 'signup') await Auth.signup(data);
                 else await Auth.login(data.email, data.password);
                 refreshProfileButton();
+                // The taxonomy overlay is per-user: rebuild the graph so the
+                // previous session's categories don't leak into this one.
+                if (window.HST_sessionChanged) window.HST_sessionChanged();
                 showProfile();
             } catch (err) {
                 error.textContent = err.message;
@@ -239,6 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         body.querySelector('[data-act="logout"]').addEventListener('click', () => {
             Auth.logout();
             refreshProfileButton();
+            if (window.HST_sessionChanged) window.HST_sessionChanged();
             closeModal();
         });
 
