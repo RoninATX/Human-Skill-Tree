@@ -322,9 +322,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             const y = pad + (ranks.length === 1 ? height / 2 : (height * ri) / (ranks.length - 1));
             rank.nodes.forEach((n, ni) => {
                 const x = pad + (rank.nodes.length === 1 ? width / 2 : (width * ni) / (rank.nodes.length - 1));
-                n.animate({ position: { x, y } }, { duration: 250 });
+                n.position({ x, y });
             });
         });
+
+        // The spread is computed in viewport pixels; refit the camera so the
+        // redistributed nodes are framed rather than left zoomed to dagre's
+        // tighter bounding box.
+        cy.animate({ fit: { eles: visible, padding: 60 } }, { duration: 250 });
     }
 
     cy.on('layoutstop', () => spreadRanksEvenly());
