@@ -26,7 +26,9 @@ const Taxonomy = (() => {
 
     function getOverlay() {
         const user = Auth.currentUser();
-        return (user && user.taxonomy) ? user.taxonomy : emptyOverlay();
+        // Normalize: older or hand-edited records may carry a partial
+        // taxonomy object ({} or missing keys); never return one as-is.
+        return { ...emptyOverlay(), ...((user && user.taxonomy) || {}) };
     }
 
     function saveOverlay(overlay) {

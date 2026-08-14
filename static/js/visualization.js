@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function() {
+    // Hoisted so handlers wired before the await (theme toggle) can check
+    // whether Cytoscape has finished initializing - a const in TDZ would
+    // throw a ReferenceError on an early theme click.
+    let cy = null;
+
     // Sidebar toggle functionality
     const sidebarCollapse = document.getElementById('sidebarCollapse');
     const sidebar = document.getElementById('sidebar');
@@ -21,8 +26,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
-        // Re-evaluate function-valued styles (hierarchy edge color).
-        cy.style().update();
+        // Re-evaluate function-valued styles (hierarchy edge color) once the
+        // graph exists; before init there is nothing to restyle.
+        if (cy) cy.style().update();
     });
 
     function updateThemeIcon(theme) {
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return domainColors[data.domain] || '#888';
     }
 
-    const cy = cytoscape({
+    cy = cytoscape({
         container: document.getElementById('cy'),
         elements: graphData,
 
