@@ -487,3 +487,26 @@ body {
     margin-top: 12px;
     flex-wrap: wrap;
 }
+
+/* Domain sidebar category list */
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.category-list-item {
+    text-align: left;
+    padding: 7px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.category-list-item:hover {
+    background: var(--button-hover);
+}

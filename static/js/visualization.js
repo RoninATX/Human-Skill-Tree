@@ -326,9 +326,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             item.addEventListener('click', () => {
                 const action = item.dataset.action;
                 if (action === 'home') {
+                    cy.$(':selected').unselect();
                     showView({ level: 'domains', domainId: null, categoryId: null });
+                    resetSidebar();
                 } else if (action === 'domain') {
                     showView({ level: 'categories', domainId: item.dataset.id, categoryId: null });
+                    // Breadcrumb nav behaves like tapping the node: select it
+                    // and show its details instead of leaving a stale
+                    // selection from the deeper view.
+                    const node = cy.getElementById(item.dataset.id);
+                    if (node.length) {
+                        cy.$(':selected').unselect();
+                        node.select();
+                        showSidebarDetail(node.data());
+                    }
                 }
             });
         });
@@ -392,6 +403,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return false;
     }
 
+    function sidebarCategoryList(data) {
+        if (data.type !== 'domain') return '';
+        const cats = cy.nodes('[type="category"]').filter(n => n.data('domain') === data.id);
+        if (!cats.length) return '';
+        const items = cats
+            .map(c => `<button class="category-list-item" data-cat="${c.id()}">${escapeHtml(c.data('label'))}</button>`)
+            .join('');
+        return `<div class="category-list">
+            <div class="proficiency-label">Categories (${cats.length})</div>
+            ${items}
+        </div>`;
+    }
+
     function sidebarEditActions(data) {
         if (data.type === 'domain') {
             return `<div class="edit-actions">
@@ -408,6 +432,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function bindEditActions(container) {
+        // Category list items drill straight into the category's skills view.
+        container.querySelectorAll('[data-cat]').forEach(item => {
+            item.addEventListener('click', () => {
+                const node = cy.getElementById(item.dataset.cat);
+                if (!node.length) return;
+                const d = node.data();
+                showView({ level: 'skills', domainId: d.domain, categoryId: d.id });
+                cy.$(':selected').unselect();
+                node.select();
+                showSidebarDetail(d);
+            });
+        });
         container.querySelectorAll('[data-edit]').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (!requireLogin()) return;
@@ -455,6 +491,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <span class="node-type-badge" style="background:${data.color}">${data.type}</span>
                     <p>${escapeHtml(data.description)}</p>
                     <p class="hint">Click to explore categories</p>
+                    ${sidebarCategoryList(data)}
                     ${sidebarEditActions(data)}
                 </div>
             `;
