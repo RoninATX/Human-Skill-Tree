@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <div class="proficiency-bar">${pips}</div>
                         ${progressHint}
                         ${progressLog}
-                        ${renderMasteryLadder(data.proficiency, color)}
+                        ${renderMasteryLadder(data.proficiency, color, level)}
                     </div>
                     ${tags ? '<div class="tags">' + tags + '</div>' : ''}
                 </div>
@@ -663,12 +663,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         { name: 'Master', capability: 'Transforms the domain; creates new knowledge; mentors experts.' }
     ];
 
-    function renderMasteryLadder(proficiency, color) {
+    // `level` is the resolved display level (user's claim wins over the
+    // shipped proficiency.level) so the ladder agrees with the pips/label.
+    function renderMasteryLadder(proficiency, color, level) {
         const defs = (proficiency.levels && proficiency.levels.length === proficiency.scale.length)
             ? proficiency.levels
             : DEFAULT_LEVEL_DEFS;
         const rows = defs.map((def, i) => {
-            const attained = proficiency.level > i;
+            const attained = level > i;
             return `<div class="ladder-row ${attained ? 'attained' : ''}">
                 <span class="ladder-name" ${attained ? `style="color:${color}"` : ''}>${i + 1}. ${escapeHtml(def.name)}</span>
                 <span class="ladder-capability">${escapeHtml(def.capability)}</span>

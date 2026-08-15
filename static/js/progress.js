@@ -30,7 +30,8 @@ const Progress = (() => {
 
     function getLog(skillId) {
         const entry = getRecord()[skillId];
-        return entry ? entry.log : [];
+        // Tolerate older/corrupted records: an entry without a log array.
+        return (entry && Array.isArray(entry.log)) ? entry.log : [];
     }
 
     /** Count of skills the user has started (level > 0). */
@@ -52,6 +53,7 @@ const Progress = (() => {
         }
         const progress = getRecord();
         const entry = progress[skillId] || { level: 0, log: [] };
+        if (!Array.isArray(entry.log)) entry.log = []; // corrupted record
         if (level === entry.level) return entry; // no-op, don't spam the log
         entry.log = [...entry.log, {
             level,
