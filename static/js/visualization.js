@@ -562,14 +562,26 @@ document.addEventListener('DOMContentLoaded', async function() {
             `;
         } else if (data.type === 'skill') {
             const color = domainColors[data.domain] || '#888';
-            const level = data.proficiency.level;
+            // The user's claimed level wins; shipped data defaults to 0.
+            const level = Progress.getLevel(data.id) ?? data.proficiency.level;
             const scale = data.proficiency.scale;
-            const levelLabel = level > 0 ? scale[level - 1] : 'Not started';
+            const defs = (data.proficiency.levels && data.proficiency.levels.length === scale.length)
+                ? data.proficiency.levels
+                : DEFAULT_LEVEL_DEFS;
+            const levelLabel = level > 0 ? defs[level - 1].name : 'Not started';
+            const loggedIn = !!Auth.currentUser();
 
+            // Pips are clickable when logged in: claim that level.
             const pips = scale.map((name, i) => {
                 const filled = i < level;
-                return `<div class="pip ${filled ? 'filled' : ''}" style="${filled ? 'background:' + color : ''}" title="${name}"></div>`;
+                const interactive = loggedIn ? ' interactive' : '';
+                return `<div class="pip${interactive} ${filled ? 'filled' : ''}" data-claim-level="${i + 1}" data-skill="${data.id}" style="${filled ? 'background:' + color : ''}" title="${escapeHtml(defs[i].name)}${loggedIn ? ' - click to claim' : ''}"></div>`;
             }).join('');
+
+            const progressLog = renderProgressLog(data.id, defs);
+            const progressHint = loggedIn
+                ? ''
+                : '<p class="hint">Sign in to track your level.</p>';
 
             const tags = (data.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
 
@@ -579,8 +591,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <p class="node-domain">${escapeHtml(domainLabels[data.domain] || data.domain)} / ${escapeHtml(categoryLabels[data.category] || data.category)}</p>
                     <p>${escapeHtml(data.description)}</p>
                     <div class="proficiency-section">
-                        <div class="proficiency-label">${levelLabel}</div>
+                        <div class="proficiency-label">${escapeHtml(levelLabel)}</div>
                         <div class="proficiency-bar">${pips}</div>
+                        ${progressHint}
+                        ${progressLog}
+                        ${renderMasteryLadder(data.proficiency, color, level)}
                     </div>
                     ${tags ? '<div class="tags">' + tags + '</div>' : ''}
                 </div>
@@ -588,6 +603,80 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         bindEditActions(sidebarContent);
+        bindProgressClaims(sidebarContent, data);
+    }
+
+    // Clicking a pip claims that level (self-assessed; note doubles as the
+    // evidence pointer until a backend exists). Down-claims are allowed and
+    // logged - decay honesty over vanity.
+    function bindProgressClaims(container, data) {
+        if (data.type !== 'skill') return;
+        container.querySelectorAll('[data-claim-level]').forEach(pip => {
+            pip.addEventListener('click', () => {
+                if (!Auth.currentUser()) return;
+                const level = Number(pip.dataset.claimLevel);
+                const defs = (data.proficiency.levels && data.proficiency.levels.length === data.proficiency.scale.length)
+                    ? data.proficiency.levels
+                    : DEFAULT_LEVEL_DEFS;
+                const def = defs[level - 1];
+                const note = prompt(
+                    `Claim "${def.name}" in ${data.label}?\n\nCapability: ${def.capability}\n\nOptional note / evidence:`,
+                    '');
+                if (note === null) return; // cancelled
+                try {
+                    Progress.setLevel(data.id, level, note);
+                    showSidebarDetail(data);
+                } catch (err) {
+                    alert(err.message);
+                }
+            });
+        });
+    }
+
+    function renderProgressLog(skillId, defs) {
+        const log = Progress.getLog(skillId);
+        if (!log.length) return '';
+        const rows = log.slice(-5).reverse().map(e => {
+            const name = e.level > 0 ? defs[e.level - 1].name : 'Not started';
+            const date = new Date(e.at).toLocaleDateString();
+            const note = e.note ? ` - ${escapeHtml(e.note)}` : '';
+            return `<div class="progress-log-row">
+                <span class="progress-log-level">${escapeHtml(name)}</span>
+                <span class="progress-log-date">${date}</span>
+                ${note ? `<span class="progress-log-note">${note}</span>` : ''}
+            </div>`;
+        }).join('');
+        return `<div class="progress-log">
+            <div class="proficiency-label">Your progress</div>
+            ${rows}
+        </div>`;
+    }
+
+    // Default Dreyfus capability descriptors, used when a skill carries no
+    // per-skill proficiency.levels (see docs/research/mastery-framework.md).
+    const DEFAULT_LEVEL_DEFS = [
+        { name: 'Novice', capability: 'Follows rules and instructions; no contextual judgment yet.' },
+        { name: 'Beginner', capability: 'Recognizes patterns; applies maxims from limited experience.' },
+        { name: 'Competent', capability: 'Plans deliberately; executes independently; invested in outcomes.' },
+        { name: 'Proficient', capability: 'Intuitive, holistic grasp; can teach others.' },
+        { name: 'Expert', capability: 'Transcends rules; innovates; others seek their expertise.' },
+        { name: 'Master', capability: 'Transforms the domain; creates new knowledge; mentors experts.' }
+    ];
+
+    // `level` is the resolved display level (user's claim wins over the
+    // shipped proficiency.level) so the ladder agrees with the pips/label.
+    function renderMasteryLadder(proficiency, color, level) {
+        const defs = (proficiency.levels && proficiency.levels.length === proficiency.scale.length)
+            ? proficiency.levels
+            : DEFAULT_LEVEL_DEFS;
+        const rows = defs.map((def, i) => {
+            const attained = level > i;
+            return `<div class="ladder-row ${attained ? 'attained' : ''}">
+                <span class="ladder-name" ${attained ? `style="color:${color}"` : ''}>${i + 1}. ${escapeHtml(def.name)}</span>
+                <span class="ladder-capability">${escapeHtml(def.capability)}</span>
+            </div>`;
+        }).join('');
+        return `<div class="mastery-ladder">${rows}</div>`;
     }
 
     function resetSidebar() {

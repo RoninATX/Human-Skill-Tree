@@ -510,3 +510,77 @@ body {
 .category-list-item:hover {
     background: var(--button-hover);
 }
+
+/* Mastery ladder (skill sidebar) */
+.mastery-ladder {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ladder-row {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 8px;
+    border-left: 3px solid var(--border-color);
+    border-radius: 0 4px 4px 0;
+    background: var(--button-bg);
+    opacity: 0.75;
+}
+
+.ladder-row.attained {
+    opacity: 1;
+    border-left-color: currentColor;
+}
+
+.ladder-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ladder-capability {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Progress tracking */
+.pip.interactive {
+    cursor: pointer;
+}
+
+.pip.interactive:hover {
+    transform: scaleY(1.6);
+}
+
+.progress-log {
+    margin-top: 10px;
+}
+
+.progress-log-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 3px 0;
+    font-size: 12px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.progress-log-row:last-child {
+    border-bottom: none;
+}
+
+.progress-log-level {
+    font-weight: bold;
+}
+
+.progress-log-date {
+    opacity: 0.5;
+    font-size: 11px;
+}
+
+.progress-log-note {
+    opacity: 0.8;
+    font-style: italic;
+    flex: 1;
+}

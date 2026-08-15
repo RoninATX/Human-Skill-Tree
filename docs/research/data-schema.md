@@ -93,6 +93,10 @@
 
 Note: Scale is defined on each skill node to allow per-skill customization in Lane 2 (Mastery Frameworks). The default 6-tier Dreyfus scale is the starting point.
 
+### Per-skill level definitions (`proficiency.levels`)
+
+Optional. An array of 6 entries, one per scale tier, each `{ "name": string, "capability": string }`. `name` overrides the Dreyfus tier label when the skill has a natural vocabulary (e.g. belt ranks); `capability` is the demonstrated outcome that earns the tier — observable and testable, never time-based. All 6 tiers must be defined or none. When absent, the UI falls back to the default Dreyfus descriptors above. Contributor guidance and worked examples: `docs/research/mastery-framework.md`.
+
 ## Edge Types
 
 ### Hierarchy
