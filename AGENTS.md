@@ -17,7 +17,7 @@ change, etc.), update the matching file in the same change.
 - `data-model.md` — Node/edge schema, hierarchy rules, ID conventions, proficiency scale. Open when adding skills, categories, domains, or edge types to `graph_data.json`.
 - `taxonomy.md` — The 9 domains and the design decisions behind them. Open when placing skills, proposing new domains, or questioning category boundaries.
 - `tooling.md` — How to run/serve the app (serve.sh, Python env, Docker), and the beans workflow. Open for setup, serving, or task-tracking questions.
-- `artifact-graph.md` — The derived beans+knowledge retrieval graph (`/context`, `rot`), its citation discipline, and the vendored tool's local divergence. Open when tracing related work or refreshing `.graph/`.
+- `.pi/skills/context/SKILL.md` and `.graph/graphscout.py` — The derived beans+knowledge retrieval graph (`context`, `rot`), its citation discipline, and the vendored implementation. Open when tracing related work or refreshing `.graph/`.
 
 ## Artifact Graph
 

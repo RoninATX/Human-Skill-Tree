@@ -8,7 +8,7 @@ before committing:
 python scripts/validate_graph.py
 ```
 
-The validator enforces every rule below and exits non-zero on errors.
+The validator checks the schema and graph invariants described below and exits non-zero on errors. Placement judgment and some naming conventions remain contributor responsibilities.
 
 ## 1. Place it: exactly one primary home
 
@@ -56,10 +56,11 @@ Append to `nodes` in `static/data/graph_data.json`:
 }
 ```
 
-Rules the validator enforces:
+Rules checked by the validator:
 
-- **ID**: lowercase hyphenated slug, unique across the *entire* graph. Don't
-  encode the hierarchy in it (`fieldcraft-celestial-nav` ❌).
+- **ID syntax and uniqueness**: lowercase hyphenated slug, unique across the
+  *entire* graph. The no-hierarchy naming convention is reviewed by the
+  contributor rather than checked by the script.
 - **Required fields**: `label`, `type`, `description`, `domain`, `category`,
   `proficiency`. `image` and `tags` are optional (icons fall back to the
   category icon, then the domain icon, then the default).
