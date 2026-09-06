@@ -77,7 +77,7 @@
 | category | yes | ID of parent category |
 | description | yes | What this skill involves |
 | image | no | Path to skill icon (falls back to domain/category icon, then default) |
-| proficiency | yes | Level (0-5) and the 6-tier Dreyfus-based scale |
+| proficiency | yes | Level (0-6) and the 6-tier Dreyfus-based scale |
 | tags | no | Freeform tags for filtering and discovery |
 
 ### Proficiency Scale
