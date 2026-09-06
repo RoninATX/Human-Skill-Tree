@@ -35,7 +35,14 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import networkx as nx
+try:
+    import networkx as nx
+except ModuleNotFoundError as exc:
+    if exc.name == "networkx":
+        raise SystemExit(
+            "graphscout requires networkx; install it with `python -m pip install networkx`"
+        ) from None
+    raise
 
 def _find_workspace() -> Path:
     """The dir holding the project folders.
@@ -967,7 +974,6 @@ def main() -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     b = sub.add_parser("beans", help="graph every .beans repo in the workspace")
-    b.add_parser = None
     b.add_argument("--repos", nargs="*", help="limit to these repo names")
 
     n = sub.add_parser("notes", help="graph a folder of linked markdown")
