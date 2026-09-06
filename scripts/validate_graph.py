@@ -49,8 +49,12 @@ def main():
     repo = os.path.abspath(os.path.join(root, "..", ".."))
     check_images = os.path.isdir(os.path.join(repo, "static", "images"))
 
-    with open(path, encoding="utf-8") as f:
-        graph = json.load(f)
+    try:
+        with open(path, encoding="utf-8") as f:
+            graph = json.load(f)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        print(f"ERROR unable to read graph data '{path}': {exc}")
+        return 1
     if not isinstance(graph, dict):
         err("graph root must be an object")
         graph = {}
@@ -134,7 +138,7 @@ def main():
             err(f"skill '{sid}' missing required 'proficiency' object")
         else:
             level = prof.get("level")
-            if not isinstance(level, int) or not 0 <= level <= SCALE_LEN:
+            if type(level) is not int or not 0 <= level <= SCALE_LEN:
                 err(f"skill '{sid}' proficiency.level must be an int 0-{SCALE_LEN}")
             scale = prof.get("scale")
             if not (isinstance(scale, list) and len(scale) == SCALE_LEN
@@ -153,7 +157,9 @@ def main():
                                 "non-empty 'name' and 'capability'")
 
         img = s.get("image")
-        if img and check_images and not os.path.exists(os.path.join(repo, img)):
+        if img is not None and not isinstance(img, str):
+            err(f"skill '{sid}' image must be a string when provided")
+        elif img and check_images and not os.path.exists(os.path.join(repo, img)):
             warn(f"skill '{sid}' image not found on disk: {img}")
 
     # --- Hierarchy occupancy -------------------------------------------
