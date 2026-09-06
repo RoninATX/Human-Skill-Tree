@@ -19,6 +19,10 @@ HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 SCALE_LEN = 6
 CROSS_DOMAIN_STRENGTHS = {"strong", "moderate", "light"}
 EDGE_TYPES = {"hierarchy", "prerequisite", "cross-domain", "complements"}
+DOMAIN_IDS = {
+    "cognitive", "creative", "emotional", "fieldcraft", "physical",
+    "practical", "social", "spiritual", "technical",
+}
 
 errors = []
 warnings = []
@@ -99,8 +103,9 @@ def main():
                 err(f"node '{n.get('id')}' missing required field '{field}'")
 
     # --- Domains -------------------------------------------------------
-    if len(domains) != 9:
-        err(f"expected 9 domains (fixed taxonomy), found {len(domains)}")
+    domain_ids = {d.get("id") for d in domains}
+    if domain_ids != DOMAIN_IDS:
+        err(f"expected fixed domain ids {sorted(DOMAIN_IDS)}, found {sorted(domain_ids, key=str)}")
     for d in domains:
         color = d.get("color", "")
         if not HEX_RE.match(color):

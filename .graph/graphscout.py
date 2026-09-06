@@ -311,7 +311,7 @@ def build_note_graph(roots: list[Path]) -> nx.MultiDiGraph:
                 stem = stem[:-3]
             hits = by_stem.get(stem, [])
             if hits:
-                targets.append(key(hits[0]))
+                targets.append(key(sorted(hits)[0]))
             elif not Path(name).suffix:
                 # Obsidian embeds (images, PDFs) share the [[...]] syntax but
                 # aren't notes; an extensionless miss is a real unresolved link.
