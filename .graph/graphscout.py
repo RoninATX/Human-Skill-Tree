@@ -165,12 +165,16 @@ def load_beans(repos: dict[str, Path]) -> list[dict]:
         try:
             proc = subprocess.run(
                 [exe, "--beans-path", str(path), "query", BEAN_QUERY, "--json"],
-                capture_output=True, shell=False,
+                capture_output=True, shell=False, timeout=30,
             )
         except FileNotFoundError:
             print("  ! beans CLI not found on PATH; install it to read tracker data",
                   file=sys.stderr)
             return []
+        except subprocess.TimeoutExpired:
+            print(f"  ! {name}: beans query timed out after 30 seconds; skipping segment",
+                  file=sys.stderr)
+            continue
         out = proc.stdout.decode("utf-8", errors="replace")
         if proc.returncode != 0 or not out.strip():
             err = proc.stderr.decode("utf-8", errors="replace").strip()

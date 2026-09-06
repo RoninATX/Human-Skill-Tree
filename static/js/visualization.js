@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // The domain view is an image-backed, fixed scene. Lower levels keep
         // the existing responsive Dagre layout and are free to pan and zoom.
         if (state.level === 'domains') {
+            cy.stop();
             content.classList.add('domain-scene');
             cy.nodes('[type="domain"]').ungrabify();
             cy.userPanningEnabled(false);
