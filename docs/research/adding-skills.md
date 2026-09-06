@@ -27,7 +27,7 @@ Placement questions, in order:
    Precision under Marksmanship).
 3. **No fitting category?** Propose a new one — but a category earns its place
    by holding 3–5 concrete skills (pressure-test with real examples first,
-   per `taxonomy.md`). A category that can only ever hold one skill is a
+   per `domain-categories.md`). A category that can only ever hold one skill is a
    skill wearing a category costume.
 4. **When in doubt, split.** Distinct practice methods, equipment, or
    progression paths mean separate sibling skills, not one fat node.
