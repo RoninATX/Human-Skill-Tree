@@ -186,8 +186,10 @@ def main():
                         f"'{by_id[src].get('domain')}' (use 'complements' instead)")
 
     # Every skill needs its hierarchy edge, or it never renders in the tree.
-    hier_pairs = {(e["source"], e["target"]) for e in edges
-                  if e.get("type") == "hierarchy"}
+    hier_pairs = {(e.get("source"), e.get("target")) for e in edges
+                  if e.get("type") == "hierarchy"
+                  and e.get("source") is not None
+                  and e.get("target") is not None}
     for s in skills:
         if (s.get("category"), s.get("id")) not in hier_pairs:
             err(f"skill '{s.get('id')}' has no hierarchy edge from "
