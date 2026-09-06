@@ -14,12 +14,12 @@ Two corpora, one analysis engine:
            links (Obsidian vault, .know, a repo wiki).
 
 Usage:
-    python graphscout.py beans
-    python graphscout.py beans --repos ProjectOne project-two --json out.json
-    python graphscout.py notes --root "/path/to/a/markdown/vault"
-    python graphscout.py beans --png beans.png
-    python graphscout.py context <bean-id|doc-stem>
-    python graphscout.py rot                    # dead ids cited by beans AND docs
+    python .graph/graphscout.py beans
+    python .graph/graphscout.py beans --repos ProjectOne project-two --json out.json
+    python .graph/graphscout.py notes --root "/path/to/a/markdown/vault"
+    python .graph/graphscout.py beans --png beans.png
+    python .graph/graphscout.py context <bean-id|doc-stem>
+    python .graph/graphscout.py rot             # dead ids cited by beans AND docs
 
 Requires: networkx (>=3.x). matplotlib only for --png.
 """
