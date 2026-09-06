@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Sidebar and viewport changes alter the contain-scaled image rectangle.
     // Re-map anchors rather than letting a responsive resize detach nodes from
     // their anatomical positions.
-    new ResizeObserver(() => {
+    function handleGraphResize() {
         cy.resize();
         if (navState.level !== 'domains') return;
         cancelAnimationFrame(domainResizeFrame);
@@ -800,7 +800,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             domainResizeFrame = null;
             if (navState.level === 'domains') positionDomainScene();
         });
-    }).observe(document.getElementById('cy'));
+    }
+
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(handleGraphResize).observe(document.getElementById('cy'));
+    } else {
+        window.addEventListener('resize', handleGraphResize);
+    }
 
     // ===== INITIAL VIEW =====
     showView({ level: 'domains', domainId: null, categoryId: null });
