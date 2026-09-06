@@ -81,6 +81,7 @@ def main():
         if isinstance(nid, str) and ID_RE.fullmatch(nid):
             if nid in by_id:
                 err(f"duplicate node id '{nid}'")
+                continue
             by_id[nid] = n
 
     domains = [n for n in nodes if n.get("type") == "domain"]
@@ -104,7 +105,9 @@ def main():
     # --- Categories ----------------------------------------------------
     cat_by_id = {}
     for c in cats:
-        cat_by_id[c.get("id")] = c
+        cid = c.get("id")
+        if isinstance(cid, str) and ID_RE.fullmatch(cid) and cid not in cat_by_id:
+            cat_by_id[cid] = c
         parent = c.get("domain")
         if not parent:
             err(f"category '{c.get('id')}' missing required field 'domain'")
@@ -112,7 +115,7 @@ def main():
             err(f"category '{c.get('id')}' points at unknown domain '{parent}'")
 
     # --- Skills --------------------------------------------------------
-    skills_in_cat = {c.get("id"): [] for c in cats}
+    skills_in_cat = {cid: [] for cid in cat_by_id}
     for s in skills:
         sid = s.get("id")
         dom, cat = s.get("domain"), s.get("category")
