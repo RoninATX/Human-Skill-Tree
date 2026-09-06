@@ -33,6 +33,24 @@ citations are what create the edges.
 - Serve via Docker (not default): `docker compose up`, then http://localhost:3123
 - Session startup: `beans prime` (loads task-tracking context; all work is tracked in beans). The repo is public, so `.beans/` is git-ignored — task data is local-only; commit code without bean files.
 
+## Tracker Shape
+
+Three standing milestones **never close**: **Hardening & Cleanup Backlog**
+(`Human-Skill-Tree-3wqy`) holds the standing buckets — CVE & Security (`pca4`),
+Operational (`2cuh`), Documentation (`f3cz`), Coordination Needed (`l408`);
+**Platform & Capability** (`Human-Skill-Tree-x4v7`) holds real feature epics that
+aren't developmental-stage work; **Curriculum & Learning Paths**
+(`Human-Skill-Tree-u8ye`) holds the curriculum attachment model and per-skill
+curriculum epics (BJJ, First-Aid, …) — a skill graduates into an epic there when
+its internal curriculum is too rich for one skill node. Stage work belongs to the
+milestone chain 691i → d838 → d896 → 9ig8 → k13v → 7rwp → nyhy.
+
+- **File by what unblocks the work, not by subject.**
+- Childless containers are `draft` — count children of **every** status; a
+  container whose children all completed is finished, not unstarted.
+- Completed work is archived on a boundary (`beans archive`), never re-parented
+  under PR/session-named epics.
+
 ## Design philosophy
 
 The taxonomy is validated with real content, not in the abstract: new categories
