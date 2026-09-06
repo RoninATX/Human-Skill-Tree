@@ -921,7 +921,7 @@ def to_json(g: nx.MultiDiGraph, path: Path) -> None:
         "nodes": [{"data": {"id": n, **{k: (list(v) if isinstance(v, tuple) else v)
                                         for k, v in d.items()}}}
                   for n, d in g.nodes(data=True)],
-        "edges": [{"data": {"source": u, "target": v, "kind": d.get("kind")}}
+        "edges": [{"data": {"source": u, "target": v, "type": d.get("kind")}}
                   for u, v, d in g.edges(data=True)],
     }
     path.write_text(json.dumps(elements, indent=2), encoding="utf-8")

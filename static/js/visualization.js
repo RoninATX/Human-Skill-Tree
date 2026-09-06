@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // the existing responsive Dagre layout and are free to pan and zoom.
         if (state.level === 'domains') {
             content.classList.add('domain-scene');
+            cy.nodes('[type="domain"]').ungrabify();
             cy.userPanningEnabled(false);
             cy.userZoomingEnabled(false);
             positionDomainScene();
@@ -352,6 +353,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             cancelAnimationFrame(domainResizeFrame);
             domainResizeFrame = null;
             restoreDomainNodeStyles();
+            cy.nodes().grabify();
             cy.userPanningEnabled(true);
             cy.userZoomingEnabled(true);
             const visible = cy.elements().not('.hidden');
