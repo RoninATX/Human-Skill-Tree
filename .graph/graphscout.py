@@ -34,6 +34,7 @@ import subprocess
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
+from typing import Optional
 
 try:
     import networkx as nx
@@ -305,7 +306,10 @@ def build_note_graph(roots: list[Path]) -> nx.MultiDiGraph:
         targets: list[str] = []
         for raw in WIKILINK_RE.findall(text):
             name = raw.strip()
-            hits = by_stem.get(name.lower().removesuffix(".md"), [])
+            stem = name.lower()
+            if stem.endswith(".md"):
+                stem = stem[:-3]
+            hits = by_stem.get(stem, [])
             if hits:
                 targets.append(key(hits[0]))
             elif not Path(name).suffix:
@@ -367,7 +371,7 @@ def _doc_stem(f: Path) -> str:
 KIND_PRIORITY = ("knowledge", "memory", "tools", "skill", "root", "wiki")
 
 
-def _resolve_doc_ref(by_stem: dict, stem: str, from_kind: str) -> str | None:
+def _resolve_doc_ref(by_stem: dict, stem: str, from_kind: str) -> Optional[str]:
     """Pick which doc a `see X.md` reference means.
 
     Prefer a match in the citing doc's own kind -- a knowledge file writing
@@ -463,7 +467,7 @@ def _out_of_corpus(ref: str, from_dir: Path, seg_root: Path, by_path: dict) -> b
 
 
 def _resolve_ref(ref: str, by_path: dict, by_stem: dict, from_dir: Path,
-                 seg_root: Path, from_kind: str) -> str | None:
+                 seg_root: Path, from_kind: str) -> Optional[str]:
     """Resolve ANY doc reference -- by path first, then by folded stem.
 
     BOTH legs (markdown/see links and backticked paths) go through here, because
@@ -644,7 +648,7 @@ def build_segment_graph(repo: str, cross: bool = False) -> nx.MultiDiGraph:
     return g
 
 
-def resolve(g: nx.MultiDiGraph, target: str) -> str | None:
+def resolve(g: nx.MultiDiGraph, target: str) -> Optional[str]:
     """Accept a bean id, a doc stem, or a kind/stem path -- any casing.
 
     Returns None and EXPLAINS WHY on both failure paths, so the caller just
