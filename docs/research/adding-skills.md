@@ -86,10 +86,11 @@ one skill when shipped.
 |-----|-----------|-------------|
 | Must you learn A before B? | `prerequisite` (A → B) | — |
 | Does mastery transfer *across domains*? | `cross-domain` | `strength`: strong / moderate / light |
-| Do they enhance each other, same domain, no ordering? | `complements` | — |
+| Do they mutually support each other without ordering? | `complements` | — |
 
-A cross-domain edge whose endpoints share a domain is a modeling error — use
-`complements` instead (the validator flags this).
+Use `complements` for mutual support regardless of domain. Reserve
+`cross-domain` for explicit mastery transfer; the validator flags a
+`cross-domain` edge whose endpoints share a domain.
 
 ## 5. Optional: write the mastery ladder
 
