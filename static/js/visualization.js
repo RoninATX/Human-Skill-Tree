@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function restoreDomainNodeStyles() {
-        cy.nodes('[type="domain"]').removeStyle('width height font-size text-max-width');
+        cy.nodes('[type="domain"]').removeStyle(['width', 'height', 'font-size', 'text-max-width']);
     }
 
     function showView(state) {

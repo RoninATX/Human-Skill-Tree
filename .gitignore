@@ -15,8 +15,8 @@ __pycache__/
 # Local task tracker data (public repo; planning stays local)
 .beans/
 
-# Derived artifact-graph tooling (useless without local .beans/.know)
-.graph/
+# Derived artifact-graph runtime cache
+.graph/__pycache__/
 
 # Dev server runtime state (scripts/serve.sh)
 .serve.pid
