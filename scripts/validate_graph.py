@@ -58,9 +58,10 @@ def main():
     for n in nodes:
         check_id(n)
         nid = n.get("id")
-        if nid in by_id:
-            err(f"duplicate node id '{nid}'")
-        by_id[nid] = n
+        if isinstance(nid, str) and ID_RE.fullmatch(nid):
+            if nid in by_id:
+                err(f"duplicate node id '{nid}'")
+            by_id[nid] = n
 
     domains = [n for n in nodes if n.get("type") == "domain"]
     cats = [n for n in nodes if n.get("type") == "category"]

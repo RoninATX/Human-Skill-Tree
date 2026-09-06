@@ -249,6 +249,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ===== NAVIGATION STATE =====
     // Levels: 'domains' | 'categories' | 'skills'
     let navState = { level: 'domains', domainId: null, categoryId: null };
+    let domainResizeFrame = null;
 
     // The background artwork is 1024 × 1024. These semantic anchors share
     // that image space; positionDomainScene maps them into the centred,
@@ -790,7 +791,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Sidebar and viewport changes alter the contain-scaled image rectangle.
     // Re-map anchors rather than letting a responsive resize detach nodes from
     // their anatomical positions.
-    let domainResizeFrame = null;
     new ResizeObserver(() => {
         cy.resize();
         if (navState.level !== 'domains') return;
