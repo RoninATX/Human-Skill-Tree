@@ -51,9 +51,29 @@ def main():
 
     with open(path, encoding="utf-8") as f:
         graph = json.load(f)
+    if not isinstance(graph, dict):
+        err("graph root must be an object")
+        graph = {}
 
-    nodes = [n.get("data", {}) for n in graph.get("nodes", [])]
-    edges = [e.get("data", {}) for e in graph.get("edges", [])]
+    def data_entries(key):
+        raw = graph.get(key, [])
+        if not isinstance(raw, list):
+            err(f"graph '{key}' must be an array")
+            return []
+        entries = []
+        for i, entry in enumerate(raw):
+            if not isinstance(entry, dict):
+                err(f"graph '{key}' entry {i} must be an object")
+                continue
+            data = entry.get("data", {})
+            if not isinstance(data, dict):
+                err(f"graph '{key}' entry {i}.data must be an object")
+                continue
+            entries.append(data)
+        return entries
+
+    nodes = data_entries("nodes")
+    edges = data_entries("edges")
     by_id = {}
     for n in nodes:
         check_id(n)

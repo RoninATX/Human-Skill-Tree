@@ -162,10 +162,15 @@ def load_beans(repos: dict[str, Path]) -> list[dict]:
     for name, path in repos.items():
         # Bytes, not text=True: at least one repo emits cp1252 punctuation that
         # blows up strict utf-8 decoding inside subprocess's reader thread.
-        proc = subprocess.run(
-            [exe, "--beans-path", str(path), "query", BEAN_QUERY, "--json"],
-            capture_output=True, shell=False,
-        )
+        try:
+            proc = subprocess.run(
+                [exe, "--beans-path", str(path), "query", BEAN_QUERY, "--json"],
+                capture_output=True, shell=False,
+            )
+        except FileNotFoundError:
+            print("  ! beans CLI not found on PATH; install it to read tracker data",
+                  file=sys.stderr)
+            return []
         out = proc.stdout.decode("utf-8", errors="replace")
         if proc.returncode != 0 or not out.strip():
             err = proc.stderr.decode("utf-8", errors="replace").strip()
