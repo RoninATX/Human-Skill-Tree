@@ -36,7 +36,7 @@ def check_id(node):
     nid = node.get("id", "<missing>")
     if "id" not in node:
         err(f"node missing id: {node!r:.80}")
-    elif not ID_RE.match(nid):
+    elif not isinstance(nid, str) or not ID_RE.fullmatch(nid):
         err(f"id '{nid}' is not a lowercase hyphenated slug")
 
 

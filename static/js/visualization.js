@@ -349,6 +349,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             positionDomainScene();
         } else {
             content.classList.remove('domain-scene');
+            cancelAnimationFrame(domainResizeFrame);
+            domainResizeFrame = null;
             restoreDomainNodeStyles();
             cy.userPanningEnabled(true);
             cy.userZoomingEnabled(true);
@@ -791,7 +793,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         cy.resize();
         if (navState.level !== 'domains') return;
         cancelAnimationFrame(domainResizeFrame);
-        domainResizeFrame = requestAnimationFrame(positionDomainScene);
+        domainResizeFrame = requestAnimationFrame(() => {
+            domainResizeFrame = null;
+            if (navState.level === 'domains') positionDomainScene();
+        });
     }).observe(document.getElementById('cy'));
 
     // ===== INITIAL VIEW =====
