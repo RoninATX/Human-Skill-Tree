@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Sidebar toggle functionality
     const sidebarCollapse = document.getElementById('sidebarCollapse');
     const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+
+    // On narrow screens the sidebar overlays the graph, so start with the
+    // taxonomy visible while keeping the menu one tap away.
+    if (window.matchMedia('(max-width: 700px)').matches) {
+        sidebar.classList.add('collapsed');
+    }
 
     sidebarCollapse.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -243,6 +250,55 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Levels: 'domains' | 'categories' | 'skills'
     let navState = { level: 'domains', domainId: null, categoryId: null };
 
+    // The background artwork is 1024 × 1024. These semantic anchors share
+    // that image space; positionDomainScene maps them into the centred,
+    // contain-scaled CSS background on every resize.
+    const VITRUVIAN_SIZE = 1024;
+    const domainAnchors = {
+        spiritual:  { x: 512, y: 112 }, // crown / circle apex
+        cognitive:  { x: 512, y: 215 }, // head
+        emotional:  { x: 512, y: 370 }, // chest
+        social:     { x: 125, y: 165 }, // raised left hand
+        creative:   { x: 899, y: 165 }, // raised right hand
+        technical:  { x: 125, y: 320 }, // lower mechanical left arm
+        practical:  { x: 899, y: 320 }, // lower mechanical right arm
+        fieldcraft: { x: 260, y: 730 }, // left ground / foot
+        physical:   { x: 764, y: 730 }  // right ground / foot
+    };
+
+    function positionDomainScene() {
+        const scale = Math.min(cy.width() / VITRUVIAN_SIZE, cy.height() / VITRUVIAN_SIZE);
+        const imageWidth = VITRUVIAN_SIZE * scale;
+        const imageHeight = VITRUVIAN_SIZE * scale;
+        const offsetX = (cy.width() - imageWidth) / 2;
+        const offsetY = (cy.height() - imageHeight) / 2;
+        const nodeScale = Math.min(1, scale);
+
+        // CSS backgrounds do not pan or zoom with Cytoscape. Keep the domain
+        // view at the same viewport transform as its image-backed anchors.
+        cy.zoom(1);
+        cy.pan({ x: 0, y: 0 });
+        cy.nodes('[type="domain"]').forEach(node => {
+            const anchor = domainAnchors[node.id()];
+            if (anchor) {
+                node.position({
+                    x: offsetX + anchor.x * scale,
+                    y: offsetY + anchor.y * scale
+                });
+                node.style({
+                    width: 160 * nodeScale,
+                    height: 70 * nodeScale,
+                    'font-size': Math.max(9, 16 * nodeScale),
+                    'text-max-width': 140 * nodeScale
+                });
+            }
+        });
+    }
+
+    function restoreDomainNodeStyles() {
+        cy.nodes('[type="domain"]').removeStyle('width height font-size text-max-width');
+    }
+
     function showView(state) {
         navState = state;
 
@@ -284,19 +340,31 @@ document.addEventListener('DOMContentLoaded', async function() {
             }).removeClass('hidden');
         }
 
-        // Re-layout visible elements
-        const visible = cy.elements().not('.hidden');
-        visible.layout({
-            name: 'dagre',
-            rankDir: 'TB',
-            padding: 60,
-            spacingFactor: 1.5,
-            rankSep: 80,
-            nodeSep: 50,
-            animate: true,
-            animationDuration: 400,
-            fit: true
-        }).run();
+        // The domain view is an image-backed, fixed scene. Lower levels keep
+        // the existing responsive Dagre layout and are free to pan and zoom.
+        if (state.level === 'domains') {
+            content.classList.add('domain-scene');
+            cy.userPanningEnabled(false);
+            cy.userZoomingEnabled(false);
+            positionDomainScene();
+        } else {
+            content.classList.remove('domain-scene');
+            restoreDomainNodeStyles();
+            cy.userPanningEnabled(true);
+            cy.userZoomingEnabled(true);
+            const visible = cy.elements().not('.hidden');
+            visible.layout({
+                name: 'dagre',
+                rankDir: 'TB',
+                padding: 60,
+                spacingFactor: 1.5,
+                rankSep: 80,
+                nodeSep: 50,
+                animate: true,
+                animationDuration: 400,
+                fit: true
+            }).run();
+        }
 
         updateBreadcrumb();
     }
@@ -714,6 +782,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             showView({ level: 'domains', domainId: null, categoryId: null });
         }
     }
+
+    // Sidebar and viewport changes alter the contain-scaled image rectangle.
+    // Re-map anchors rather than letting a responsive resize detach nodes from
+    // their anatomical positions.
+    let domainResizeFrame = null;
+    new ResizeObserver(() => {
+        cy.resize();
+        if (navState.level !== 'domains') return;
+        cancelAnimationFrame(domainResizeFrame);
+        domainResizeFrame = requestAnimationFrame(positionDomainScene);
+    }).observe(document.getElementById('cy'));
 
     // ===== INITIAL VIEW =====
     showView({ level: 'domains', domainId: null, categoryId: null });
